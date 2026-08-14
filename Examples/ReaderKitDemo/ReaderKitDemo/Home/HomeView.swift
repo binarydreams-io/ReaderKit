@@ -11,7 +11,8 @@ struct HomeView: View {
 
   var body: some View {
     ZStack {
-      ReaderKitBackdrop()
+      Color.readerCanvas
+        .ignoresSafeArea()
 
       VStack(spacing: 30) {
         Spacer(minLength: 24)
@@ -37,12 +38,12 @@ struct HomeView: View {
         .font(.system(size: 30, weight: .semibold))
         .foregroundStyle(.white)
         .frame(width: 68, height: 68)
-        .background(Color.readerGreen.gradient, in: .rect(cornerRadius: 22))
+        .background(Color.readerGreen, in: .rect(cornerRadius: 22))
         .shadow(color: .readerGreen.opacity(0.28), radius: 24, y: 12)
         .accessibilityHidden(true)
 
       Text("ReaderKit")
-        .font(.system(size: 48, weight: .semibold, design: .serif))
+        .font(.system(size: 48, weight: .semibold))
         .tracking(-1.4)
 
       Text("Turn a web page into a native reading surface.")
@@ -55,18 +56,11 @@ struct HomeView: View {
   private var launcher: some View {
     VStack(alignment: .leading, spacing: 10) {
       GlassEffectContainer(spacing: 12) {
-        ViewThatFits(in: .horizontal) {
-          HStack(spacing: 12) {
-            urlField
-            readButton
-          }
-
-          VStack(spacing: 12) {
-            urlField
-            readButton
-              .frame(maxWidth: .infinity)
-          }
+        VStack(spacing: 12) {
+          urlField
+          readButton
         }
+        .frame(maxWidth: .infinity)
       }
 
       if let validationMessage {
@@ -78,6 +72,7 @@ struct HomeView: View {
       }
     }
     .animation(.snappy, value: validationMessage)
+    .frame(maxWidth: .infinity)
   }
 
   private var urlField: some View {
@@ -87,7 +82,7 @@ struct HomeView: View {
       .textContentType(.URL)
       .autocorrectionDisabled()
       .padding(.horizontal, 18)
-      .frame(minHeight: 52)
+      .frame(maxWidth: .infinity, minHeight: 52)
       .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 18))
       .onSubmit(openReader)
 #if os(iOS)
@@ -100,9 +95,11 @@ struct HomeView: View {
     Button(action: openReader) {
       Label("Read", systemImage: "book.pages")
         .fontWeight(.semibold)
+        .padding(.horizontal, 18)
         .frame(minHeight: 32)
     }
     .buttonStyle(.glassProminent)
+    .buttonBorderShape(.capsule)
     .tint(.readerGreen)
   }
 
@@ -158,33 +155,5 @@ struct HomeView: View {
       return nil
     }
     return components.url
-  }
-}
-
-private struct ReaderKitBackdrop: View {
-  var body: some View {
-    ZStack {
-      Color.readerCanvas
-
-      RoundedRectangle(cornerRadius: 160)
-        .fill(
-          LinearGradient(
-            colors: [Color.readerGreen.opacity(0.28), Color.mint.opacity(0.08)],
-            startPoint: .topLeading,
-            endPoint: .bottomTrailing
-          )
-        )
-        .frame(width: 260, height: 520)
-        .rotationEffect(.degrees(28))
-        .offset(x: -230, y: -100)
-        .blur(radius: 2)
-
-      Circle()
-        .fill(Color.readerGreen.opacity(0.15))
-        .frame(width: 360, height: 360)
-        .offset(x: 290, y: 210)
-        .blur(radius: 30)
-    }
-    .ignoresSafeArea()
   }
 }
