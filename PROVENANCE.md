@@ -6,7 +6,7 @@
 - Public repository: `https://github.com/binarydreams-io/ReaderKit`
 - Role: native reader SDK, RichText renderer, and maintained Swift port
 - License: Apache-2.0
-- First public release: 0.1.0
+- First public release: 1.0.0
 
 Binary Dreams extracted ReaderKit from the private Nuwleef application into a fresh public history.
 The extraction excludes private repository metadata and captured third-party web pages.

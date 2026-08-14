@@ -2,8 +2,8 @@ cff-version: 1.2.0
 message: "If you use ReaderKit in research or published software, cite this repository."
 title: "ReaderKit"
 type: software
-version: 0.1.0
-date-released: 2026-08-14
+version: 1.0.0
+date-released: 2026-08-15
 license: Apache-2.0
 repository-code: "https://github.com/binarydreams-io/ReaderKit"
 url: "https://binarydreams.io"

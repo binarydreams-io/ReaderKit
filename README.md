@@ -11,7 +11,7 @@ The extraction engine is a Swift port of the original JavaScript
 [Mozilla Readability](https://github.com/mozilla/readability).
 ReaderKit adds host-gated site rules, structured inspection reports, and a native `RichText` renderer.
 
-Version `0.1.0` uses Swift tools 6.2.
+Version `1.0.0` uses Swift tools 6.2.
 It supports iOS 17 or later and macOS 14 or later.
 
 ## Three Products
@@ -34,7 +34,7 @@ Add ReaderKit to your package:
 ```swift
 .package(
   url: "https://github.com/binarydreams-io/ReaderKit",
-  from: "0.1.0"
+  from: "1.0.0"
 )
 ```
 
