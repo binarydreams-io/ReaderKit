@@ -1,0 +1,33 @@
+name: Documentation
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: documentation-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  documentation:
+    name: Build DocC
+    runs-on: macos-26
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Build target documentation
+        run: |
+          for scheme in ReaderKit Readability RichText; do
+            xcodebuild \
+              docbuild \
+              -scheme "$scheme" \
+              -destination 'generic/platform=macOS' \
+              -derivedDataPath "$RUNNER_TEMP/$scheme-docs" \
+              DOCC_TREAT_WARNINGS_AS_ERRORS=YES
+          done

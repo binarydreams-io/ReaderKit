@@ -1,0 +1,32 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "%lld." : {
+
+    },
+    "•" : {
+
+    },
+    "Article is loading..." : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Статья загружается..."
+          }
+        }
+      }
+    },
+    "Article not found" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Статья не найдена"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

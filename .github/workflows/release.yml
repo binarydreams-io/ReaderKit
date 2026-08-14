@@ -1,0 +1,36 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "[0-9]*.[0-9]*.[0-9]*"
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    name: Verify and publish release
+    runs-on: macos-26
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - name: Validate the SemVer tag
+        run: |
+          [[ "$GITHUB_REF_NAME" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]
+          git tag --points-at HEAD | grep -Fxq "$GITHUB_REF_NAME"
+          grep -Fq "version: $GITHUB_REF_NAME" CITATION.cff
+      - name: Run package tests
+        run: swift test -Xswiftc -warnings-as-errors
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: >-
+          gh release create "$GITHUB_REF_NAME"
+          --generate-notes
+          --verify-tag
+          --title "ReaderKit $GITHUB_REF_NAME"

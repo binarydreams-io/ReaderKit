@@ -1,0 +1,58 @@
+name: ReaderKitDemo
+
+options:
+  bundleIdPrefix: io.binarydreams
+  deploymentTarget:
+    iOS: "26.0"
+    macOS: "26.0"
+
+packages:
+  ReaderKit:
+    path: ../..
+
+targets:
+  ReaderKitDemo:
+    type: application
+    platform: iOS
+    supportedDestinations:
+      - iOS
+      - macOS
+    sources:
+      - path: ReaderKitDemo
+    dependencies:
+      - package: ReaderKit
+        product: ReaderKit
+    settings:
+      base:
+        CODE_SIGN_STYLE: Automatic
+        CURRENT_PROJECT_VERSION: 1
+        DEVELOPMENT_TEAM: ""
+        ENABLE_HARDENED_RUNTIME: YES
+        ENABLE_USER_SCRIPT_SANDBOXING: YES
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_CFBundleDisplayName: ReaderKit
+        INFOPLIST_KEY_LSApplicationCategoryType: public.app-category.developer-tools
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        INFOPLIST_KEY_UIApplicationSceneManifest_Generation: YES
+        IPHONEOS_DEPLOYMENT_TARGET: 26.0
+        MACOSX_DEPLOYMENT_TARGET: 26.0
+        MARKETING_VERSION: 0.1.0
+        PRODUCT_BUNDLE_IDENTIFIER: io.binarydreams.ReaderKitDemo
+        PRODUCT_NAME: ReaderKit Demo
+        SWIFT_DEFAULT_ACTOR_ISOLATION: MainActor
+        SWIFT_EMIT_LOC_STRINGS: YES
+        SWIFT_STRICT_CONCURRENCY: complete
+        SWIFT_VERSION: 6.0
+        TARGETED_DEVICE_FAMILY: "1,2"
+      "base[sdk=macosx*]":
+        CODE_SIGN_ENTITLEMENTS: ReaderKitDemo/ReaderKitDemo.entitlements
+
+schemes:
+  ReaderKitDemo:
+    build:
+      targets:
+        ReaderKitDemo: all
+    run:
+      config: Debug
+    archive:
+      config: Release

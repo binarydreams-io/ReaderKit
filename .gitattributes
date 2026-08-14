@@ -1,0 +1,17 @@
+* text=auto
+*.sh text eol=lf
+*.env text eol=lf
+*.swift text eol=lf
+*.md text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.json text eol=lf
+*.cff text eol=lf
+
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+
+Documentation/** linguist-documentation
+Tests/ReadabilityTests/Resources/test-pages/** -whitespace

@@ -1,0 +1,72 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  quality:
+    name: Quality gate
+    runs-on: macos-26
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Install pinned quality tools
+        run: |
+          source scripts/toolchain.env
+          mkdir -p "$RUNNER_TEMP/bin"
+
+          curl --fail --location --silent --show-error \
+            "$SWIFTLINT_MACOS_URL" \
+            --output "$RUNNER_TEMP/swiftlint.zip"
+          printf '%s  %s\n' \
+            "$SWIFTLINT_MACOS_SHA256" \
+            "$RUNNER_TEMP/swiftlint.zip" \
+            | shasum -a 256 --check
+          unzip -q -j "$RUNNER_TEMP/swiftlint.zip" swiftlint -d "$RUNNER_TEMP/bin"
+
+          curl --fail --location --silent --show-error \
+            "$SWIFTFORMAT_MACOS_URL" \
+            --output "$RUNNER_TEMP/swiftformat.zip"
+          printf '%s  %s\n' \
+            "$SWIFTFORMAT_MACOS_SHA256" \
+            "$RUNNER_TEMP/swiftformat.zip" \
+            | shasum -a 256 --check
+          unzip -q -j "$RUNNER_TEMP/swiftformat.zip" swiftformat -d "$RUNNER_TEMP/bin"
+          chmod +x "$RUNNER_TEMP/bin/swiftformat"
+
+          case "$RUNNER_ARCH" in
+            ARM64)
+              ACTIONLINT_URL="$ACTIONLINT_MACOS_ARM64_URL"
+              ACTIONLINT_SHA256="$ACTIONLINT_MACOS_ARM64_SHA256"
+              ;;
+            X64)
+              ACTIONLINT_URL="$ACTIONLINT_MACOS_X64_URL"
+              ACTIONLINT_SHA256="$ACTIONLINT_MACOS_X64_SHA256"
+              ;;
+            *)
+              printf 'Unsupported runner architecture: %s\n' "$RUNNER_ARCH" >&2
+              exit 1
+              ;;
+          esac
+          curl --fail --location --silent --show-error \
+            "$ACTIONLINT_URL" \
+            --output "$RUNNER_TEMP/actionlint.tar.gz"
+          printf '%s  %s\n' \
+            "$ACTIONLINT_SHA256" \
+            "$RUNNER_TEMP/actionlint.tar.gz" \
+            | shasum -a 256 --check
+          tar -xzf "$RUNNER_TEMP/actionlint.tar.gz" -C "$RUNNER_TEMP/bin" actionlint
+          printf '%s\n' "$RUNNER_TEMP/bin" >> "$GITHUB_PATH"
+      - name: Run the quality gate
+        run: ./scripts/quality-gate.sh

@@ -1,0 +1,638 @@
+import Foundation
+@testable import Readability
+import SwiftSoup
+import Testing
+
+/// Tests for ArticleCleaner functionality
+@Suite("Article Cleaner Tests")
+struct ArticleCleanerTests {
+
+  // MARK: - isPhrasingContent Tests
+
+  @Test
+  func `isPhrasingContent returns true for text nodes`() throws {
+    let html = "<p>Text</p>"
+    let doc = try SwiftSoup.parseBodyFragment(html)
+    let p = try #require(doc.select("p").first())
+
+    let cleaner = ArticleCleaner(options: .default)
+
+    // The text node inside p is phrasing content
+    let textNodes = p.textNodes()
+    #expect(textNodes.count > 0)
+    for textNode in textNodes {
+      #expect(cleaner.isPhrasingContent(textNode) == true)
+    }
+  }
+
+  @Test
+  func `isPhrasingContent returns true for inline elements`() throws {
+    let html = "<p><span>Text</span><strong>Bold</strong></p>"
+    let doc = try SwiftSoup.parseBodyFragment(html)
+    let span = try #require(doc.select("span").first())
+    let strong = try #require(doc.select("strong").first())
+
+    let cleaner = ArticleCleaner(options: .default)
+
+    #expect(cleaner.isPhrasingContent(span) == true)
+    #expect(cleaner.isPhrasingContent(strong) == true)
+  }
+
+  @Test
+  func `isPhrasingContent returns false for block elements`() throws {
+    let html = "<div><p>Text</p></div>"
+    let doc = try SwiftSoup.parseBodyFragment(html)
+    let p = try #require(doc.select("p").first())
+
+    let cleaner = ArticleCleaner(options: .default)
+
+    #expect(cleaner.isPhrasingContent(p) == false)
+  }
+
+  @Test
+  func `isPhrasingContent handles A with phrasing children`() throws {
+    let html = "<a href='#'><span>Text</span></a>"
+    let doc = try SwiftSoup.parseBodyFragment(html)
+    let a = try #require(doc.select("a").first())
+
+    let cleaner = ArticleCleaner(options: .default)
+
+    #expect(cleaner.isPhrasingContent(a) == true)
+  }
+
+  // MARK: - hasSingleTagInsideElement Tests
+
+  @Test
+  func `hasSingleTagInsideElement returns true for single child`() throws {
+    let html = "<div><p>Text</p></div>"
+    let doc = try SwiftSoup.parseBodyFragment(html)
+    let div = try #require(doc.select("div").first())
+
+    let cleaner = ArticleCleaner(options: .default)
+
+    #expect(cleaner.hasSingleTagInsideElement(div, tag: "p") == true)
+  }
+
+  @Test
+  func `hasSingleTagInsideElement returns false for wrong tag`() throws {
+    let html = "<div><span>Text</span></div>"
+    let doc = try SwiftSoup.parseBodyFragment(html)
+    let div = try #require(doc.select("div").first())
+
+    let cleaner = ArticleCleaner(options: .default)
+
+    #expect(cleaner.hasSingleTagInsideElement(div, tag: "p") == false)
+  }
+
+  @Test
+  func `hasSingleTagInsideElement returns false for multiple children`() throws {
+    let html = "<div><p>One</p><p>Two</p></div>"
+    let doc = try SwiftSoup.parseBodyFragment(html)
+    let div = try #require(doc.select("div").first())
+
+    let cleaner = ArticleCleaner(options: .default)
+
+    #expect(cleaner.hasSingleTagInsideElement(div, tag: "p") == false)
+  }
+
+  @Test
+  func `hasSingleTagInsideElement returns false with text content`() throws {
+    let html = "<div>Text<p>Para</p></div>"
+    let doc = try SwiftSoup.parseBodyFragment(html)
+    let div = try #require(doc.select("div").first())
+
+    let cleaner = ArticleCleaner(options: .default)
+
+    #expect(cleaner.hasSingleTagInsideElement(div, tag: "p") == false)
+  }
+
+  // MARK: - hasChildBlockElement Tests
+
+  @Test
+  func `hasChildBlockElement detects block children`() throws {
+    let html = "<div><p>Text</p></div>"
+    let doc = try SwiftSoup.parseBodyFragment(html)
+    let div = try #require(doc.select("div").first())
+
+    let cleaner = ArticleCleaner(options: .default)
+
+    #expect(try cleaner.hasChildBlockElement(div) == true)
+  }
+
+  @Test
+  func `hasChildBlockElement returns false for inline only`() throws {
+    let html = "<div><span>Text</span><em>Em</em></div>"
+    let doc = try SwiftSoup.parseBodyFragment(html)
+    let div = try #require(doc.select("div").first())
+
+    let cleaner = ArticleCleaner(options: .default)
+
+    #expect(try cleaner.hasChildBlockElement(div) == false)
+  }
+
+  @Test
+  func `hasChildBlockElement checks nested elements`() throws {
+    let html = "<div><span><p>Nested</p></span></div>"
+    let doc = try SwiftSoup.parseBodyFragment(html)
+    let div = try #require(doc.select("div").first())
+
+    let cleaner = ArticleCleaner(options: .default)
+
+    #expect(try cleaner.hasChildBlockElement(div) == true)
+  }
+
+  // MARK: - setNodeTag Tests
+
+  @Test
+  func `setNodeTag changes tag name`() throws {
+    let html = "<div class='test' id='myid'>Content</div>"
+    let doc = try SwiftSoup.parseBodyFragment(html)
+    let div = try #require(doc.select("div").first())
+
+    let cleaner = ArticleCleaner(options: .default)
+    let p = try cleaner.setNodeTag(div, newTag: "p")
+
+    #expect(p.tagName().lowercased() == "p")
+    #expect(p.hasClass("test"))
+    #expect(p.id() == "myid")
+    #expect(try p.text() == "Content")
+  }
+
+  @Test
+  func `setNodeTag preserves mixed child node order without duplication`() throws {
+    let html = "<div id='x'>A<span>1</span><!--note--><em>2</em>B</div>"
+    let doc = try SwiftSoup.parseBodyFragment(html)
+    let div = try #require(doc.select("div").first())
+
+    let cleaner = ArticleCleaner(options: .default)
+    let p = try cleaner.setNodeTag(div, newTag: "p")
+
+    #expect(p.tagName().lowercased() == "p")
+    #expect(p.id() == "x")
+    let childNodes = p.getChildNodes()
+    #expect(childNodes.map { $0.nodeName() } == ["#text", "span", "#comment", "em", "#text"])
+    #expect((childNodes[0] as? TextNode)?.getWholeText() == "A")
+    #expect((childNodes[4] as? TextNode)?.getWholeText() == "B")
+  }
+
+  // MARK: - prepArticle Tests
+
+  @Test
+  func `prepArticle removes scripts`() throws {
+    let html = "<article><p>Text</p><script>alert('x')</script></article>"
+    let doc = try SwiftSoup.parseBodyFragment(html)
+    let article = try #require(doc.select("article").first())
+
+    let cleaner = ArticleCleaner(options: .default)
+    try cleaner.prepArticle(article)
+
+    let scripts = try article.select("script")
+    #expect(scripts.isEmpty())
+  }
+
+  @Test
+  func `prepArticle removes hidden elements`() throws {
+    // Test with hidden attribute
+    let html = "<article><p>Text</p><p hidden>Hidden</p><p aria-hidden='true'>Aria Hidden</p></article>"
+    let doc = try SwiftSoup.parseBodyFragment(html)
+    let article = try #require(doc.select("article").first())
+
+    let cleaner = ArticleCleaner(options: .default)
+    try cleaner.prepArticle(article)
+
+    let paragraphs = try article.select("p")
+    #expect(paragraphs.count == 1)
+  }
+
+  @Test
+  func `prepArticle strictly removes aria-hidden fallback-image elements`() throws {
+    let html = "<article><p>Text</p><p aria-hidden='true' class='fallback-image'>Math</p></article>"
+    let doc = try SwiftSoup.parseBodyFragment(html)
+    let article = try #require(doc.select("article").first())
+
+    let cleaner = ArticleCleaner(options: .default)
+    try cleaner.prepArticle(article)
+
+    let paragraphs = try article.select("p")
+    #expect(paragraphs.count == 1)
+    #expect(try paragraphs.first()?.text() == "Text")
+  }
+
+  @Test
+  func `prepArticle removes short role-note main-article callout`() throws {
+    let html = """
+    <article>
+      <p>Lead paragraph with enough text to survive cleanup and extraction behavior.</p>
+      <div role="note"><p>Main article: <a href="/wiki/Firefox">Firefox</a></p></div>
+    </article>
+    """
+    let doc = try SwiftSoup.parseBodyFragment(html)
+    let article = try #require(doc.select("article").first())
+
+    let cleaner = ArticleCleaner(options: .default)
+    try cleaner.prepArticle(article)
+
+    #expect(try (article.select("div[role=note]").isEmpty()) == true)
+    #expect(try (article.select("a[href=/wiki/Firefox]").isEmpty()) == true)
+  }
+
+  @Test
+  func `prepArticle removes mksite leading publication cluster before lead media`() throws {
+    let html = """
+    <html>
+    <head>
+      <meta name="generator" content="mksite.c and my keyboard">
+    </head>
+    <body>
+      <main>
+        <b title="Publication"><time>2026-04-18</time></b> (<a href="/tags/programming/">Programming</a>)
+        <p></p>
+        <img src="/projects/mcufont/demo.png" alt="Some example text in this font.">
+        <center><a href="/projects/mcufont/mcufont.h">Font data (C header)</a></center>
+        <p>All characters fit within a 5 pixel square, and are intended to be drawn on a 6x6 grid. The design is based off of a compact pixel font and provides enough prose, commas, and descriptive detail to survive cleanup.</p>
+        <p>Five by five is actually big enough to draw most lowercase letters one pixel shorter, making them visually distinct from uppercase while keeping the fixture realistic.</p>
+      </main>
+    </body>
+    </html>
+    """
+    let doc = try SwiftSoup.parse(html, "https://maurycyz.com/projects/mcufont/")
+    let article = try #require(doc.select("main").first())
+
+    let cleaner = ArticleCleaner(options: .default)
+    try cleaner.prepArticle(article)
+
+    #expect(try (article.select("b[title=Publication]").isEmpty()) == true)
+    #expect(try (article.select("a[href*=tags]").isEmpty()) == true)
+    #expect(try (article.select("img[src=\"/projects/mcufont/demo.png\"]").isEmpty()) == false)
+    #expect(try (article.select("center a[href=\"/projects/mcufont/mcufont.h\"]").isEmpty()) == false)
+    #expect(article.children().first?.tagName().lowercased() == "img")
+  }
+
+  @Test
+  func `prepArticle converts divs without block children to p`() throws {
+    let html = "<article><div>Just text content</div></article>"
+    let doc = try SwiftSoup.parseBodyFragment(html)
+    let article = try #require(doc.select("article").first())
+
+    let cleaner = ArticleCleaner(options: .default)
+    try cleaner.prepArticle(article)
+
+    let divs = try article.select("div")
+    let ps = try article.select("p")
+
+    #expect(divs.isEmpty())
+    #expect(ps.count == 1)
+    #expect(try ps.first()?.text() == "Just text content")
+  }
+
+  @Test
+  func `prepArticle wraps mixed phrasing runs without reordering`() throws {
+    let html = "<article><div>alpha <span>beta</span><h2>head</h2> gamma <em>delta</em></div></article>"
+    let doc = try SwiftSoup.parseBodyFragment(html)
+    let article = try #require(doc.select("article").first())
+
+    let cleaner = ArticleCleaner(options: .default)
+    try cleaner.prepArticle(article)
+
+    let div = try #require(article.select("div").first())
+    let blockChildren = div.children()
+    #expect(blockChildren.count == 3)
+    #expect(blockChildren[0].tagName().lowercased() == "p")
+    #expect(blockChildren[1].tagName().lowercased() == "h2")
+    #expect(blockChildren[2].tagName().lowercased() == "p")
+
+    #expect(try blockChildren[0].text() == "alpha beta")
+    #expect(try blockChildren[1].text() == "head")
+    #expect(try blockChildren[2].text() == "gamma delta")
+    #expect(try div.text() == "alpha beta head gamma delta")
+  }
+
+  @Test
+  func `prepArticle removes teads in-read ad shell`() throws {
+    let html = """
+    <article>
+        <div id="storytext">
+            <p>Paragraph one</p>
+            <div class="teads-inread">
+                <span>ADVERTISING</span>
+                <span>inRead</span>
+                <span>invented by Teads</span>
+            </div>
+            <p>Paragraph two</p>
+        </div>
+    </article>
+    """
+    let doc = try SwiftSoup.parseBodyFragment(html)
+    let article = try #require(doc.select("article").first())
+
+    let cleaner = ArticleCleaner(options: .default, sourceURL: URL(string: "https://www.cnn.com/2026/01/01/example/index.html"))
+    try cleaner.prepArticle(article)
+
+    #expect(try article.text().contains("Paragraph one"))
+    #expect(try article.text().contains("Paragraph two"))
+    #expect(try (article.text().lowercased().contains("invented by teads")) == false)
+  }
+
+  @Test
+  func `prepArticle removes Washington Post gallery embeds`() throws {
+    let html = """
+    <article>
+        <div id="gallery-embed_1417452270618_709">interactive gallery</div>
+        <p>Body paragraph</p>
+    </article>
+    """
+    let doc = try SwiftSoup.parseBodyFragment(html)
+    let article = try #require(doc.select("article").first())
+
+    let cleaner = ArticleCleaner(options: .default)
+    try cleaner.prepArticle(article)
+
+    #expect(try article.select("div[id^=gallery-embed_]").isEmpty())
+    #expect(try article.text().contains("Body paragraph"))
+  }
+
+  @Test
+  func `prepArticle removes Substack discussion and subscribe footer modules`() throws {
+    let html = """
+    <article>
+        <div>
+            <p>Main body paragraph.</p>
+        </div>
+        <div id="discussion">
+            <h4>Discussion about this post</h4>
+            <div id="substack-comments">
+                <div data-test-id="comment-input">
+                    <form></form>
+                </div>
+                <div role="article" aria-label="Comment by reader">
+                    <p>This should not survive extraction.</p>
+                </div>
+            </div>
+            <a class="more-comments" href="https://example.substack.com/p/example/comments">53 more comments...</a>
+        </div>
+        <div>
+            <h3>Ready for more?</h3>
+            <form action="/api/v1/free?nojs=true" method="post">
+                <input type="hidden" name="source" value="subscribe_footer">
+                <input type="email" name="email">
+            </form>
+        </div>
+        <div aria-label="Top Posts Footer" role="region">
+            <p class="portable-archive-empty">No posts</p>
+        </div>
+    </article>
+    """
+    let doc = try SwiftSoup.parseBodyFragment(html)
+    let article = try #require(doc.select("article").first())
+
+    let cleaner = ArticleCleaner(options: .default, sourceURL: URL(string: "https://example.substack.com/p/example"))
+    try cleaner.prepArticle(article)
+
+    #expect(try (article.select("div#discussion").isEmpty()) == true)
+    #expect(try (article.text().contains("This should not survive extraction.")) == false)
+    #expect(try (article.text().contains("53 more comments")) == false)
+    #expect(try (article.text().contains("Ready for more?")) == false)
+    #expect(try (article.text().contains("No posts")) == false)
+    #expect(try (article.select("form[action*=\"/api/v1/free?nojs=true\"]").isEmpty()) == true)
+    #expect(try (article.select("div[aria-label=\"Top Posts Footer\"]").isEmpty()) == true)
+    #expect(try article.text().contains("Main body paragraph."))
+  }
+
+  @Test
+  func `postProcessArticle normalizes Substack Twitter2ToDOM widgets`() throws {
+    let html = """
+    <article>
+        <a href="https://x.com/philogroves/status/2042195139477557499?s=61" target="_blank" rel="noopener noreferrer" data-component-name="Twitter2ToDOM">
+            <div data-attrs="{&quot;url&quot;:&quot;https://x.com/philogroves/status/2042195139477557499?s=61&quot;,&quot;full_text&quot;:&quot;Mythos' Firefox exploitation didn't actually have sandbox enabled and built on top of research from Opus. Shocker.&quot;,&quot;username&quot;:&quot;PhiloGroves&quot;,&quot;name&quot;:&quot;Philo Groves&quot;,&quot;profile_image_url&quot;:&quot;https://pbs.substack.com/profile_images/example.jpg&quot;,&quot;date&quot;:&quot;2026-04-09T10:57:18.000Z&quot;,&quot;photos&quot;:[{&quot;img_url&quot;:&quot;https://pbs.substack.com/media/HFdVfKcXsAAu_Xp.jpg&quot;,&quot;link_url&quot;:&quot;https://t.co/xwWUsb82hW&quot;}],&quot;quoted_tweet&quot;:{},&quot;reply_count&quot;:11,&quot;retweet_count&quot;:55,&quot;like_count&quot;:651,&quot;impression_count&quot;:83416,&quot;expanded_url&quot;:null,&quot;video_url&quot;:null,&quot;belowTheFold&quot;:false}">
+                <div>
+                    <p><span>Philo Groves</span> <span>@PhiloGroves</span></p>
+                </div>
+                <p>Mythos' Firefox exploitation didn't actually have sandbox enabled and built on top of research from Opus. Shocker.</p>
+                <p><img src="https://pbs.substack.com/media/HFdVfKcXsAAu_Xp.jpg" /></p>
+                <div>
+                    <p><span>10:57 AM · Apr 9, 2026</span> <span> · </span> <span>83.4K Views</span></p>
+                    <p><span>11 Replies</span> <span> · </span> <span>55 Reposts</span> <span> · </span> <span>651 Likes</span></p>
+                </div>
+            </div>
+        </a>
+    </article>
+    """
+    let doc = try SwiftSoup.parseBodyFragment(html)
+    let article = try #require(doc.select("article").first())
+
+    let cleaner = ArticleCleaner(options: .default, sourceURL: URL(string: "https://example.substack.com/p/example"))
+    try cleaner.postProcessArticle(article)
+
+    let blockquote = try article.select("blockquote").first()
+    #expect(blockquote != nil)
+    #expect(try (article.select("a[data-component-name=\"Twitter2ToDOM\"]").isEmpty()) == true)
+    #expect(try (blockquote?.attr("cite")) == "https://x.com/philogroves/status/2042195139477557499?s=61")
+    #expect(try article.text().contains("Mythos' Firefox exploitation didn't actually have sandbox enabled and built on top of research from Opus. Shocker."))
+    #expect(try article.text().contains("Philo Groves (@PhiloGroves) on X, Apr 9, 2026"))
+    #expect(try (article.text().contains("83.4K Views")) == false)
+    #expect(try (article.text().contains("55 Reposts")) == false)
+    #expect(try (article.select("blockquote img[src=\"https://pbs.substack.com/media/HFdVfKcXsAAu_Xp.jpg\"]").isEmpty()) == false)
+  }
+
+  @Test
+  func `prepArticle removes view-graphic promo block after gallery cleanup`() throws {
+    let html = """
+    <article>
+        <div>
+            <p>
+                <a href="http://www.washingtonpost.com/world/example_graphic.html"><img src="https://example.com/a.jpg"></a>
+                <a href="http://www.washingtonpost.com/world/example_graphic.html">View Graphic</a>
+            </p>
+        </div>
+        <p><span>Map: Flow of foreign fighters to Syria</span></p>
+    </article>
+    """
+    let doc = try SwiftSoup.parseBodyFragment(html)
+    let article = try #require(doc.select("article").first())
+
+    let cleaner = ArticleCleaner(options: .default)
+    try cleaner.prepArticle(article)
+
+    #expect(try (article.text().lowercased().contains("view graphic")) == false)
+    #expect(try article.text().contains("Map: Flow of foreign fighters to Syria"))
+  }
+
+  @Test
+  func `prepArticle promotes floated paragraph-leading image to figure`() throws {
+    let html = """
+    <article>
+        <p><img src="https://example.com/lead.jpg" style="float: left; margin: 0 12px 12px 0;">Leading text.</p>
+    </article>
+    """
+    let doc = try SwiftSoup.parseBodyFragment(html)
+    let article = try #require(doc.select("article").first())
+
+    let cleaner = ArticleCleaner(options: .default)
+    try cleaner.prepArticle(article)
+
+    let children = article.children()
+    #expect(children.count == 2)
+    #expect(children[0].tagName().lowercased() == "figure")
+    #expect(children[1].tagName().lowercased() == "p")
+    #expect(try (article.select("figure > img[src=\"https://example.com/lead.jpg\"]").isEmpty()) == false)
+    #expect(try children[1].text() == "Leading text.")
+  }
+
+  @Test
+  func `prepArticle splits paragraph around floated middle image`() throws {
+    let html = """
+    <article>
+        <p>Before <img src="https://example.com/middle.jpg" style="display:block; float:right; margin-left: 12px;"> after.</p>
+    </article>
+    """
+    let doc = try SwiftSoup.parseBodyFragment(html)
+    let article = try #require(doc.select("article").first())
+
+    let cleaner = ArticleCleaner(options: .default)
+    try cleaner.prepArticle(article)
+
+    let children = article.children()
+    #expect(children.count == 3)
+    #expect(children[0].tagName().lowercased() == "p")
+    #expect(children[1].tagName().lowercased() == "figure")
+    #expect(children[2].tagName().lowercased() == "p")
+    #expect(try children[0].text() == "Before")
+    #expect(try children[2].text() == "after.")
+    #expect(try (article.select("figure > img[src=\"https://example.com/middle.jpg\"]").isEmpty()) == false)
+  }
+
+  @Test
+  func `prepArticle preserves inline wrappers when promoting floated image`() throws {
+    let html = """
+    <article>
+        <p><strong><img src="https://example.com/name.jpg" style="float: left;">John Calhoun:</strong>&nbsp;Hello world.</p>
+    </article>
+    """
+    let doc = try SwiftSoup.parseBodyFragment(html)
+    let article = try #require(doc.select("article").first())
+
+    let cleaner = ArticleCleaner(options: .default)
+    try cleaner.prepArticle(article)
+
+    let children = article.children()
+    #expect(children.count == 2)
+    #expect(children[0].tagName().lowercased() == "figure")
+    #expect(children[1].tagName().lowercased() == "p")
+    #expect(try (children[1].select("strong").first()?.text()) == "John Calhoun:")
+    let normalizedText = try children[1].text()
+      .replacingOccurrences(of: "\\s+", with: " ", options: .regularExpression)
+      .trimmingCharacters(in: .whitespacesAndNewlines)
+    #expect(normalizedText == "John Calhoun: Hello world.")
+  }
+
+  @Test
+  func `prepArticle promotes floated paragraph-trailing image to figure`() throws {
+    let html = """
+    <article>
+        <p>Trailing text <img src="https://example.com/end.jpg" style="float:right"></p>
+    </article>
+    """
+    let doc = try SwiftSoup.parseBodyFragment(html)
+    let article = try #require(doc.select("article").first())
+
+    let cleaner = ArticleCleaner(options: .default)
+    try cleaner.prepArticle(article)
+
+    let children = article.children()
+    #expect(children.count == 2)
+    #expect(children[0].tagName().lowercased() == "p")
+    #expect(children[1].tagName().lowercased() == "figure")
+    #expect(try children[0].text() == "Trailing text")
+    #expect(try (article.select("figure > img[src=\"https://example.com/end.jpg\"]").isEmpty()) == false)
+  }
+
+  // MARK: - cleanStyles Tests
+
+  @Test
+  func `cleanStyles removes presentational attributes`() throws {
+    let html = "<p style='color:red' align='center'>Text</p>"
+    let doc = try SwiftSoup.parseBodyFragment(html)
+    let p = try #require(doc.select("p").first())
+
+    let cleaner = ArticleCleaner(options: .default)
+    try cleaner.prepArticle(p)
+
+    #expect(!p.hasAttr("style"))
+    #expect(!p.hasAttr("align"))
+  }
+
+  @Test
+  func `cleanStyles preserves classes when keepClasses is true`() throws {
+    let html = "<p class='content main'>Text</p>"
+    let doc = try SwiftSoup.parseBodyFragment(html)
+    let p = try #require(doc.select("p").first())
+
+    let options = ReadabilityOptions(keepClasses: true)
+    let cleaner = ArticleCleaner(options: options)
+    try cleaner.prepArticle(p)
+
+    #expect(try p.className() == "content main")
+  }
+
+  // MARK: - fixLazyImages Tests
+
+  @Test
+  func `fixLazyImages converts data-src to src`() throws {
+    let html = "<img data-src='image.jpg' alt='Test'>"
+    let doc = try SwiftSoup.parseBodyFragment(html)
+    let img = try #require(doc.select("img").first())
+
+    let cleaner = ArticleCleaner(options: .default)
+    try cleaner.prepArticle(img)
+
+    let src = try img.attr("src")
+    #expect(src == "image.jpg")
+  }
+
+  // MARK: - simplifyNestedElements Tests
+
+  @Test
+  func `simplifyNestedElements removes empty elements`() throws {
+    let html = "<article><div></div><p>Content</p></article>"
+    let doc = try SwiftSoup.parseBodyFragment(html)
+    let article = try #require(doc.select("article").first())
+
+    let cleaner = ArticleCleaner(options: .default)
+    try cleaner.prepArticle(article)
+
+    // Empty div should be removed
+    let divs = try article.select("div:empty")
+    #expect(divs.isEmpty())
+  }
+
+  // MARK: - handleSingleCellTables Tests
+
+  @Test
+  func `handleSingleCellTables converts single cell tables`() throws {
+    let html = "<table><tr><td>Cell content</td></tr></table>"
+    let doc = try SwiftSoup.parseBodyFragment(html)
+    let table = try #require(doc.select("table").first())
+
+    let cleaner = ArticleCleaner(options: .default)
+    try cleaner.handleSingleCellTables(table)
+
+    // Table should be replaced with p or div
+    let tables = try doc.select("table")
+    #expect(tables.isEmpty())
+  }
+
+  // MARK: - cleanHeaders Tests
+
+  @Test
+  func `cleanHeaders removes low weight headers`() throws {
+    let html = "<article><h1 class='comment-title'>Title</h1><p>Content</p></article>"
+    let doc = try SwiftSoup.parseBodyFragment(html)
+    let article = try #require(doc.select("article").first())
+
+    let cleaner = ArticleCleaner(options: .default)
+    try cleaner.cleanHeaders(article)
+
+    let h1 = try article.select("h1")
+    #expect(h1.isEmpty())
+  }
+}

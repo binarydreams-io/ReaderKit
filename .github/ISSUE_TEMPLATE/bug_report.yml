@@ -1,0 +1,62 @@
+name: Bug report
+description: Report incorrect or unexpected ReaderKit behavior.
+title: "[Bug]: "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: Remove credentials, cookies, private URLs, and personal data from all reports.
+  - type: dropdown
+    id: product
+    attributes:
+      label: Product
+      options:
+        - ReaderKit
+        - Readability
+        - RichText
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Describe the observed behavior and expected behavior.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction
+      description: Provide the smallest safe program or HTML fixture and exact commands.
+      render: swift
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: ReaderKit version
+      placeholder: 0.1.0
+    validations:
+      required: true
+  - type: input
+    id: swift
+    attributes:
+      label: Swift version
+      description: Paste the first line from `swift --version`.
+    validations:
+      required: true
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Platform
+      options:
+        - iOS
+        - macOS
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      description: Add relevant output after you remove private data.
+      render: shell

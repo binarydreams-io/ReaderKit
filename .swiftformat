@@ -1,0 +1,15 @@
+--binarygrouping none
+--commas inline
+--decimalgrouping 3,8
+--hexgrouping none
+--ifdef no-indent
+--indent 2
+--octalgrouping none
+--self init-only
+--semicolons never
+--stripunusedargs closure-only
+--wraparguments before-first
+--wrapcollections before-first
+--wrapparameters before-first
+--disable blankLinesAtStartOfScope,blankLinesBetweenImports,conditionalAssignment,hoistTry,indent,modifierOrder,numberFormatting,redundantEquatable,redundantFileprivate,redundantPublic,sortImports,swiftTestingTestCaseNames,trailingCommas,environmentEntry
+--extensionacl on-declarations

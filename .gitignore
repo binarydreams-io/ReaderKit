@@ -1,0 +1,14 @@
+.DS_Store
+/.build/
+/.swiftpm/
+/DerivedData/
+/docc-output/
+/release-output/
+/Examples/ReaderKitDemo/DerivedData/
+xcuserdata/
+.netrc
+.cursor/
+.serena/
+.vscode/
+AGENTS.md
+*.backup
