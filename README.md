@@ -3,6 +3,10 @@
 [![CI](https://github.com/binarydreams-io/ReaderKit/actions/workflows/ci.yml/badge.svg)](https://github.com/binarydreams-io/ReaderKit/actions/workflows/ci.yml)
 [![Release](https://img.shields.io/github/v/release/binarydreams-io/ReaderKit)](https://github.com/binarydreams-io/ReaderKit/releases)
 
+<a href="https://binarydreams.io" target="_blank" rel="noopener noreferrer">
+  <img src="Icon.svg" alt="ReaderKit icon" width="120" align="left">
+</a>
+
 ReaderKit is a Swift SDK for native reading apps on Apple platforms.
 It downloads a web page, extracts the article, converts HTML into typed blocks, and renders those blocks with SwiftUI.
 The complete pipeline uses no `WKWebView`, JavaScript runtime, CSS, or HTML-backed attributed string.
@@ -13,6 +17,9 @@ ReaderKit adds host-gated site rules, structured inspection reports, and a nativ
 
 Version `1.0.0` uses Swift tools 6.2.
 It supports iOS 17 or later and macOS 14 or later.
+
+<br clear="left">
+<br>
 
 ## Three Products
 
