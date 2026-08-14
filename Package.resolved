@@ -1,5 +1,5 @@
 {
-  "originHash" : "de03b5ab73555b24488e329d66fd8c124479339882d59880e039b1d092162229",
+  "originHash" : "3d9fee22ecf5773c2acdc8c1e627d4226239e1995d2596a37c8e75a3845e99d8",
   "pins" : [
     {
       "identity" : "nuke",
@@ -15,8 +15,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/scinfu/SwiftSoup",
       "state" : {
-        "revision" : "6c7915e16f729857aec3e99068c361e58a00ed68",
-        "version" : "2.13.4"
+        "revision" : "8d6ad267714cac3ae747cefdd21f7a6665006e1f",
+        "version" : "2.13.7"
       }
     }
   ],
