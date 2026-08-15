@@ -3,6 +3,7 @@ included:
   - Tests
   - CompileFixtures/Consumer/Sources
   - Examples/ReaderKitDemo/ReaderKitDemo
+  - scripts/check-package-notices.swift
 
 excluded:
   - .build

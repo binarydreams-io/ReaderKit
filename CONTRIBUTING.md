@@ -28,6 +28,16 @@ Remove credentials, cookies, identifiers, and personal data from every fixture.
 Update public documentation when a change affects behavior or API.
 Update notices and provenance when a change incorporates third-party work.
 
+## Licensing Contributions
+
+By submitting a contribution, you license each changed file under the license
+assigned to its destination path in the
+[license section of the README](README.md#license-and-attribution).
+This path assignment applies only to material that you have the right to license.
+
+Do not submit third-party material unless you have the right to redistribute it.
+Preserve all required copyright, license, attribution, and modification notices.
+
 Use conventional commit messages.
 Follow the [Code of Conduct](CODE_OF_CONDUCT.md).
 Report vulnerabilities through [SECURITY.md](SECURITY.md), not through a public issue.

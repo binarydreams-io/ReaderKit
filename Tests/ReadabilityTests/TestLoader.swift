@@ -1,3 +1,7 @@
+// SPDX-License-Identifier: Apache-2.0
+// Contains material adapted from Mozilla Readability or Neo Lee's swift-readability.
+// Modified by Binary Dreams, LLC.
+
 import Foundation
 
 /// Utility for loading Mozilla test cases
@@ -5,6 +9,11 @@ enum TestLoader {
   private struct CaseMetadata: Decodable {
     let url: String
   }
+
+  private static let expectedHTMLModificationNotices = [
+    "<!-- ReaderKit notice: Neo Lee's swift-readability commit 9f11fbea21c8c1f930b76964da8fa919faa17d08 removed <br id=\"br2\" /> from this Mozilla fixture. ReaderKit preserves that change. -->",
+    "<!-- ReaderKit notice: Neo Lee's swift-readability commit 9f11fbea21c8c1f930b76964da8fa919faa17d08 removed <hr /> from this Mozilla fixture. ReaderKit preserves that change. -->"
+  ]
 
   struct TestCase {
     let name: String
@@ -124,7 +133,9 @@ enum TestLoader {
       let metadataURL = testPageURL.appendingPathComponent("expected-metadata.json")
 
       let sourceHTML = try String(contentsOf: sourceURL, encoding: .utf8)
-      let expectedHTML = try String(contentsOf: expectedURL, encoding: .utf8)
+      let expectedHTML = removingExpectedHTMLModificationNotice(
+        from: try String(contentsOf: expectedURL, encoding: .utf8)
+      )
       let metadataData = try Data(contentsOf: metadataURL)
       let metadata = try JSONDecoder().decode(TestMetadata.self, from: metadataData)
       let caseMetaURL = testPageURL.appendingPathComponent("meta.json")
@@ -148,5 +159,15 @@ enum TestLoader {
       print("Failed to load test case '\(name)': \(error)")
       return nil
     }
+  }
+
+  private static func removingExpectedHTMLModificationNotice(from html: String) -> String {
+    for notice in expectedHTMLModificationNotices {
+      let sentinel = notice + "\n"
+      if html.hasPrefix(sentinel) {
+        return String(html.dropFirst(sentinel.count))
+      }
+    }
+    return html
   }
 }

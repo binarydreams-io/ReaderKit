@@ -1,3 +1,6 @@
+// Copyright 2026 Binary Dreams, LLC.
+// SPDX-License-Identifier: MIT
+
 import SwiftUI
 
 enum ReadingTheme: String, CaseIterable, Identifiable {

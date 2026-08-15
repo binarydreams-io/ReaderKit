@@ -1,4 +1,6 @@
 // swift-tools-version: 6.2
+// Copyright 2026 Binary Dreams, LLC.
+// SPDX-License-Identifier: Apache-2.0
 
 import PackageDescription
 

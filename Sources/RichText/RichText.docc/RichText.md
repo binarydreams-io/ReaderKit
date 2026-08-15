@@ -16,6 +16,11 @@ RichTextView(blocks: blocks, style: ReaderStyle())
 The block model is independent of rendering settings.
 Theme and typography changes do not require another HTML parse.
 
+## License
+
+Source files in this module use the MIT License.
+Distributions must also preserve the notices for linked package dependencies.
+
 ## Topics
 
 ### Parsing

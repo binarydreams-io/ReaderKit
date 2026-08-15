@@ -1,3 +1,6 @@
+// Copyright 2026 Binary Dreams, LLC.
+// SPDX-License-Identifier: MIT
+
 import Foundation
 @testable import RichText
 import SwiftSoup

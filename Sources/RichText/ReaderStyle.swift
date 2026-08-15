@@ -1,3 +1,6 @@
+// Copyright 2026 Binary Dreams, LLC.
+// SPDX-License-Identifier: MIT
+
 import SwiftUI
 
 /// Native styling values for the reader, replacing the old CSS override string.

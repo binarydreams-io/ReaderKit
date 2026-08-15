@@ -1,3 +1,7 @@
+// SPDX-License-Identifier: Apache-2.0
+// Contains material adapted from Mozilla Readability or Neo Lee's swift-readability.
+// Modified by Binary Dreams, LLC.
+
 import Foundation
 
 /// The data-driven half of the site-rule corpus: every rule here is a plain

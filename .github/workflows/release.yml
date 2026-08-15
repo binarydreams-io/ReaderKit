@@ -9,8 +9,12 @@ permissions:
   contents: read
 
 jobs:
+  quality:
+    uses: ./.github/workflows/ci.yml
+
   release:
     name: Verify and publish release
+    needs: quality
     runs-on: macos-26
     permissions:
       contents: write
@@ -24,8 +28,16 @@ jobs:
           [[ "$GITHUB_REF_NAME" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]
           git tag --points-at HEAD | grep -Fxq "$GITHUB_REF_NAME"
           grep -Fq "version: $GITHUB_REF_NAME" CITATION.cff
-      - name: Run package tests
-        run: swift test -Xswiftc -warnings-as-errors
+      - name: Package license notices
+        run: |
+          bundle="$RUNNER_TEMP/ReaderKit-$GITHUB_REF_NAME-licenses"
+          archive="$bundle.zip"
+          ./scripts/copy-license-notices.sh "$bundle"
+          ditto -c -k --norsrc --noextattr --noqtn --noacl --keepParent "$bundle" "$archive"
+          (
+            cd "$RUNNER_TEMP"
+            shasum -a 256 "$(basename "$archive")" > "$(basename "$archive").sha256"
+          )
       - name: Create GitHub release
         env:
           GH_TOKEN: ${{ github.token }}
@@ -34,3 +46,5 @@ jobs:
           --generate-notes
           --verify-tag
           --title "ReaderKit $GITHUB_REF_NAME"
+          "$RUNNER_TEMP/ReaderKit-$GITHUB_REF_NAME-licenses.zip"
+          "$RUNNER_TEMP/ReaderKit-$GITHUB_REF_NAME-licenses.zip.sha256"

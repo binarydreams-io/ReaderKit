@@ -151,3 +151,8 @@ RichText maps common article markup into native blocks:
 
 RichText is an article renderer, not a browser layout engine.
 It does not apply site CSS or execute scripts.
+
+## License
+
+Source files in `Sources/RichText` use the MIT License.
+Distributions must also preserve the notices for linked package dependencies.

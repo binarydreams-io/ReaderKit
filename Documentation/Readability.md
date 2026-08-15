@@ -1,7 +1,7 @@
 # Readability API
 
 The `Readability` product extracts an article and its metadata from an HTML document.
-It is a Swift port of the original JavaScript Mozilla Readability implementation.
+It is an adapted, non-line-for-line Swift implementation of Mozilla Readability.
 The target depends on SwiftSoup and does not depend on SwiftUI or Nuke.
 
 ## Parse An Article
@@ -136,3 +136,9 @@ The parser itself is not `Sendable` because it owns a mutable SwiftSoup DOM.
 Parsing is synchronous and can process a large document.
 Call it away from the main actor when document size can affect interaction latency.
 The extraction pipeline checks task cancellation at major stages.
+
+## License
+
+Source files in `Sources/Readability` use the Apache License 2.0.
+The implementation includes material adapted from Mozilla Readability and
+Neo Lee's `swift-readability`. The repository preserves both upstream notices.

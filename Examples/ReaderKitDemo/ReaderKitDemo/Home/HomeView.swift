@@ -1,3 +1,6 @@
+// Copyright 2026 Binary Dreams, LLC.
+// SPDX-License-Identifier: MIT
+
 import SwiftUI
 
 struct HomeView: View {
@@ -106,13 +109,13 @@ struct HomeView: View {
   private var featureChips: some View {
     ViewThatFits(in: .horizontal) {
       HStack(spacing: 10) {
-        chip("Readability port", systemImage: "text.magnifyingglass")
+        chip("Readability engine", systemImage: "text.magnifyingglass")
         chip("Native SwiftUI", systemImage: "swift")
         chip("No WebKit", systemImage: "checkmark.shield")
       }
 
       VStack(spacing: 10) {
-        chip("Readability port", systemImage: "text.magnifyingglass")
+        chip("Readability engine", systemImage: "text.magnifyingglass")
         chip("Native SwiftUI", systemImage: "swift")
         chip("No WebKit", systemImage: "checkmark.shield")
       }

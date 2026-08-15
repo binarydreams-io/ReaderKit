@@ -24,6 +24,12 @@ Style changes only update native rendering.
 
 Use the standalone `Readability` or `RichText` product when your app controls networking or stores article content.
 
+## License
+
+Source files in this module use the MIT License.
+The complete product also contains the Apache-licensed `Readability` target.
+Distributions must include both project licenses and the applicable notices.
+
 ## Topics
 
 ### Reading A URL

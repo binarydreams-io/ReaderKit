@@ -1,4 +1,6 @@
 // swift-tools-version: 6.2
+// Copyright 2026 Binary Dreams, LLC.
+// SPDX-License-Identifier: MIT
 
 import PackageDescription
 

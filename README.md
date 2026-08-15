@@ -11,8 +11,8 @@ ReaderKit is a Swift SDK for native reading apps on Apple platforms.
 It downloads a web page, extracts the article, converts HTML into typed blocks, and renders those blocks with SwiftUI.
 The complete pipeline uses no `WKWebView`, JavaScript runtime, CSS, or HTML-backed attributed string.
 
-The extraction engine is a Swift port of the original JavaScript
-[Mozilla Readability](https://github.com/mozilla/readability).
+The extraction engine is an adapted, non-line-for-line Swift implementation
+of [Mozilla Readability](https://github.com/mozilla/readability).
 ReaderKit adds host-gated site rules, structured inspection reports, and a native `RichText` renderer.
 
 Version `1.0.0` uses Swift tools 6.2.
@@ -93,7 +93,7 @@ Changing `ReaderStyle` updates the SwiftUI view without another network request 
 
 Read the [ReaderKit API guide](Documentation/ReaderKit.md) for integration details.
 
-## Readability Port
+## Readability Implementation
 
 Use `Readability` when your app controls networking or stores article HTML:
 
@@ -112,7 +112,7 @@ print(article.byline ?? "Unknown author")
 print(article.content)
 ```
 
-The port includes:
+The implementation includes:
 
 - Main-content scoring and sibling merging.
 - Metadata from JSON-LD, Open Graph, Twitter Cards, Dublin Core, and document titles.
@@ -230,8 +230,34 @@ Run the full repository check:
 
 ## License And Attribution
 
-ReaderKit is available under the [Apache License 2.0](LICENSE).
+Licenses apply by file path. The repository is not dual-licensed as a whole.
+
+The [Apache License 2.0](LICENSE) applies to:
+
+- `Sources/Readability/**`
+- `Tests/ReadabilityTests/**`, except embedded third-party page content
+- `Documentation/Readability.md`
+- Other first-party files not assigned to the MIT License below
+
+The [MIT License](LICENSE-MIT) applies to:
+
+- `Sources/ReaderKit/**`
+- `Sources/RichText/**`
+- `Tests/ReaderKitTests/**`
+- `Tests/RichTextTests/**`
+- `Documentation/ReaderKit.md`
+- `Documentation/RichText.md`
+- `Examples/**`
+- `CompileFixtures/**`
+
+The `ReaderKit` product depends on the Apache-licensed `Readability` target.
+A distribution of that product contains Apache-2.0 and MIT components.
+
+The path assignments apply to ReaderKit-authored code, adaptations, and fixture changes.
+Embedded third-party page content remains under its original terms.
 ReaderKit is not an official Mozilla product.
+Binary distributions must include both project licenses and all applicable third-party notices.
+Run `./scripts/copy-license-notices.sh <archive-root>` to prepare that notice bundle.
 
 See [Notices](NOTICE.md), [Credits](CREDITS.md), and [Provenance](PROVENANCE.md) for upstream attribution.
 See [Changelog](CHANGELOG.md), [Contributing](CONTRIBUTING.md), [Support](SUPPORT.md), and [Code of Conduct](CODE_OF_CONDUCT.md) for project policies.

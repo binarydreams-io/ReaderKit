@@ -2,6 +2,12 @@
 
 ReaderKit follows [Semantic Versioning](https://semver.org/).
 
+## Unreleased
+
+### Changed
+
+- Defined Apache-2.0 and MIT license scopes by component and added distribution notices.
+
 ## 1.0.0 - 2026-08-15
 
 ### Added

@@ -67,6 +67,12 @@ The host app owns these controls:
 - Redirect and private-network policy.
 - Response-size limits and caching.
 
+## License
+
+Source files in `Sources/ReaderKit` use the MIT License.
+The complete `ReaderKit` product also contains the Apache-licensed `Readability` target.
+Distributions must include both project licenses and the applicable third-party notices.
+
 ## Related APIs
 
 - [Readability API](Readability.md)

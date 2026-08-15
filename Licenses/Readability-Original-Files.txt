@@ -1,0 +1,6 @@
+# Binary Dreams files in the Apache-licensed Readability component.
+Sources/Readability/Extensions/String+HTML.swift
+Sources/Readability/Internal/Logger.swift
+Sources/Readability/Internal/SiteRules/DeclarativeSiteRule.swift
+Tests/ReadabilityTests/ReadabilityExtractContentTests.swift
+Tests/ReadabilityTests/StringHTMLTests.swift
