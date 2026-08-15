@@ -22,7 +22,7 @@
 		08415471F12A00A55C951C10 /* ReaderKitDemo.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ReaderKitDemo.entitlements; sourceTree = "<group>"; };
 		19DBB9EDAA7E49196CE979EF /* ReaderScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderScreen.swift; sourceTree = "<group>"; };
 		30358DDDD4879DB601BBB796 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
-		6AA0457888136A42D02A26A9 /* ReaderKitDemo.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = ReaderKitDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		6AA0457888136A42D02A26A9 /* ReaderKit Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ReaderKit Demo.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		78739351CFAB67F496A6B0C9 /* ReaderKitDemoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderKitDemoApp.swift; sourceTree = "<group>"; };
 		91968E50BBB6CE0E4BCACE01 /* ReaderSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderSettingsView.swift; sourceTree = "<group>"; };
 		97811A22A99B680B351902D4 /* Color+ReaderKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+ReaderKit.swift"; sourceTree = "<group>"; };
@@ -76,7 +76,7 @@
 		6AAFF93DD854A0CF0D78DB32 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				6AA0457888136A42D02A26A9 /* ReaderKitDemo.app */,
+				6AA0457888136A42D02A26A9 /* ReaderKit Demo.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -136,7 +136,7 @@
 				112AA118A3E4F8A6246F6A45 /* ReaderKit */,
 			);
 			productName = ReaderKitDemo;
-			productReference = 6AA0457888136A42D02A26A9 /* ReaderKitDemo.app */;
+			productReference = 6AA0457888136A42D02A26A9 /* ReaderKit Demo.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -149,7 +149,6 @@
 				LastUpgradeCheck = 1430;
 				TargetAttributes = {
 					B2659A207044699D877CDC80 = {
-						DevelopmentTeam = "";
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -323,7 +322,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = UZUUHDKDZ6;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -360,7 +359,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = UZUUHDKDZ6;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GENERATE_INFOPLIST_FILE = YES;
