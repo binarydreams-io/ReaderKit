@@ -8,4 +8,5 @@ PROJECT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 swift "$SCRIPT_DIR/check-package-notices.swift" \
   "$PROJECT_DIR/Package.resolved" \
   "$PROJECT_DIR/Licenses/Package-Notices.tsv" \
-  "$PROJECT_DIR/Licenses"
+  "$PROJECT_DIR/Licenses" \
+  "$PROJECT_DIR/.build/checkouts"

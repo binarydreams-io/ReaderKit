@@ -48,7 +48,7 @@ LICENSE_FILES=(
   "Licenses/Readability-Original-Files.txt"
   "Licenses/SwiftReadability-MIT.txt"
 )
-while IFS=$'\t' read -r package _version license_file; do
+while IFS=$'\t' read -r package license_file; do
   [[ -z "$package" || "$package" == \#* ]] && continue
   LICENSE_FILES+=("Licenses/$license_file")
 done < "$PROJECT_DIR/Licenses/Package-Notices.tsv"

@@ -25,7 +25,7 @@ cp "$PACKAGE_NOTICE_MANIFEST" "$LICENSES_DESTINATION/Package-Notices.tsv"
 cp "$PROJECT_DIR/Licenses/Readability-Original-Files.txt" "$LICENSES_DESTINATION/Readability-Original-Files.txt"
 cp "$PROJECT_DIR/Licenses/SwiftReadability-MIT.txt" "$LICENSES_DESTINATION/SwiftReadability-MIT.txt"
 
-while IFS=$'\t' read -r package _version license_file; do
+while IFS=$'\t' read -r package license_file; do
   [[ -z "$package" || "$package" == \#* ]] && continue
   cp "$PROJECT_DIR/Licenses/$license_file" "$LICENSES_DESTINATION/$license_file"
 done < "$PACKAGE_NOTICE_MANIFEST"

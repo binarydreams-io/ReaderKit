@@ -4,6 +4,10 @@ ReaderKit follows [Semantic Versioning](https://semver.org/).
 
 ## Unreleased
 
+### Changed
+
+- The package-notice check no longer pins dependency versions in `Licenses/Package-Notices.tsv`. It verifies that every resolved package has a notice and that each notice matches the license shipped in the resolved checkout, so a dependency bump passes the quality gate without a manifest edit and a license change still fails it.
+
 ## 1.1.1 - 2026-08-26
 
 ### Changed
