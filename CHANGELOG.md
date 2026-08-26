@@ -4,6 +4,12 @@ ReaderKit follows [Semantic Versioning](https://semver.org/).
 
 ## Unreleased
 
+## 1.1.1 - 2026-08-26
+
+### Changed
+
+- Resolved Nuke 13.2.0 in the package's own `Package.resolved`; the minimum version stays 13.0.4.
+
 ## 1.1.0 - 2026-08-26
 
 ### Added
