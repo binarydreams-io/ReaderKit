@@ -4,6 +4,12 @@ ReaderKit follows [Semantic Versioning](https://semver.org/).
 
 ## Unreleased
 
+## 1.1.0 - 2026-08-26
+
+### Added
+
+- Telegram posts read in `ReaderView`: a `t.me/<channel>/<id>` link now fetches the server-rendered `?embed=1` page, and a `t.me` site rule rebuilds the post from it — text as paragraphs, photos and videos as media, the "Forwarded from" line, and the channel name as the byline. The public post page carries no message text, so the reader used to show only the widget's "Copy" link.
+
 ### Changed
 
 - Defined Apache-2.0 and MIT license scopes by component and added distribution notices.
