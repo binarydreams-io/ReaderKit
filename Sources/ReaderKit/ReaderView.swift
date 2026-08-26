@@ -71,7 +71,8 @@ public struct ReaderView: View {
 
 extension ReaderView {
   @concurrent
-  fileprivate nonisolated static func fetchAndParse(from url: URL) async throws -> [ArticleBlock] {
+  fileprivate nonisolated static func fetchAndParse(from link: URL) async throws -> [ArticleBlock] {
+    let url = ReaderFetchURL.fetchURL(for: link)
     let (data, response) = try await URLSession.shared.data(from: url)
 
     guard let html = decodeHTML(data: data, response: response) else {

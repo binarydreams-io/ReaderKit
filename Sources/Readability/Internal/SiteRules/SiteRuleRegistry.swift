@@ -89,7 +89,8 @@ enum SiteRuleRegistry {
     let host = resolveHost(sourceURL: sourceURL, document: document)
     let rules: [PreExtractionDocumentRule.Type] = [
       StandardDiscussionModuleRule.self,
-      XeiasoArticleRule.self
+      XeiasoArticleRule.self,
+      TelegramPostRule.self
     ]
     for rule in rules where rule.appliesTo(host: host) {
       try rule.apply(to: document, sourceURL: sourceURL)
@@ -154,7 +155,8 @@ enum SiteRuleRegistry {
     let host = resolveHost(sourceURL: sourceURL, document: document)
     let rules: [MetadataBylineSiteRule.Type] = [
       AntirezBylineRule.self,
-      FirefoxNightlyBylineRule.self
+      FirefoxNightlyBylineRule.self,
+      TelegramPostRule.self
     ]
     var current = byline
     for rule in rules where rule.appliesTo(host: host) {
@@ -193,7 +195,8 @@ enum SiteRuleRegistry {
   ) throws -> Bool {
     let host = resolveHost(sourceURL: sourceURL, document: document)
     let rules: [TextlessArticleContentSiteRule.Type] = [
-      XkcdTextlessComicContentRule.self
+      XkcdTextlessComicContentRule.self,
+      TelegramPostRule.self
     ]
     for rule in rules where rule.appliesTo(host: host) {
       if try rule.shouldKeepTextlessArticleContent(articleContent, sourceURL: sourceURL, document: document) {
@@ -211,7 +214,8 @@ enum SiteRuleRegistry {
     let host = resolveHost(sourceURL: sourceURL, document: document)
     let rules: [ShortContentFallbackSiteRule.Type] = [
       OneA23GalleryShortArticleRule.self,
-      XeiasoArticleRule.self
+      XeiasoArticleRule.self,
+      TelegramPostRule.self
     ]
     for rule in rules where rule.appliesTo(host: host) {
       if let fallback = try rule.fallbackArticleContent(in: document, sourceURL: sourceURL) {

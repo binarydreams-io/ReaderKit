@@ -4,3 +4,5 @@ Sources/Readability/Internal/Logger.swift
 Sources/Readability/Internal/SiteRules/DeclarativeSiteRule.swift
 Tests/ReadabilityTests/ReadabilityExtractContentTests.swift
 Tests/ReadabilityTests/StringHTMLTests.swift
+Sources/Readability/Internal/SiteRules/Rules/TelegramPostRule.swift
+Tests/ReadabilityTests/TelegramPostRuleTests.swift
