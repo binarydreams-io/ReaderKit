@@ -4,13 +4,13 @@
 
 import Foundation
 
-/// Errors that can occur during Readability parsing
+/// Errors that Readability parsing can throw.
 public enum ReadabilityError: Error, CustomStringConvertible, Sendable {
   /// Could not find article content in the document
   case noContent
 
-  /// Extracted content is below the minimum character threshold
-  case contentTooShort(actualLength: Int, threshold: Int)
+  /// Extracted content is below the minimum character count
+  case contentTooShort(length: Int, minimumLength: Int)
 
   /// HTML parsing failed
   case parsingFailed(underlying: Error)
@@ -19,26 +19,43 @@ public enum ReadabilityError: Error, CustomStringConvertible, Sendable {
   case invalidHTML
 
   /// A required element was not found
-  case elementNotFound(String)
+  case elementNotFound(selector: String)
 
   /// The document exceeds `ReadabilityOptions.maxElementsToParse` and was
   /// aborted before scoring, mirroring upstream's DoS guard.
-  case tooManyElements(actual: Int, limit: Int)
+  case tooManyElements(count: Int, limit: Int)
 
   public var description: String {
     switch self {
     case .noContent:
       "Could not find article content in the document"
-    case let .contentTooShort(actual, threshold):
-      "Extracted content is too short (\(actual) characters, minimum \(threshold))"
+    case let .contentTooShort(length, minimumLength):
+      "Extracted content is too short (\(length) characters, minimum \(minimumLength))"
     case let .parsingFailed(error):
       "HTML parsing failed: \(error.localizedDescription)"
     case .invalidHTML:
       "Invalid HTML input"
     case let .elementNotFound(selector):
       "Required element not found: \(selector)"
-    case let .tooManyElements(actual, limit):
-      "Aborting parsing document: \(actual) elements found, exceeding limit of \(limit)"
+    case let .tooManyElements(count, limit):
+      "Aborting parsing document: \(count) elements found, exceeding limit of \(limit)"
     }
+  }
+}
+
+extension ReadabilityError {
+  @available(*, deprecated, renamed: "contentTooShort(length:minimumLength:)")
+  public static func contentTooShort(actualLength: Int, threshold: Int) -> Self {
+    .contentTooShort(length: actualLength, minimumLength: threshold)
+  }
+
+  @available(*, deprecated, renamed: "elementNotFound(selector:)")
+  public static func elementNotFound(_ selector: String) -> Self {
+    .elementNotFound(selector: selector)
+  }
+
+  @available(*, deprecated, renamed: "tooManyElements(count:limit:)")
+  public static func tooManyElements(actual: Int, limit: Int) -> Self {
+    .tooManyElements(count: actual, limit: limit)
   }
 }

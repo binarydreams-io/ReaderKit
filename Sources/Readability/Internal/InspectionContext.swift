@@ -14,14 +14,14 @@ final class InspectionContext {
   private struct PassBuilder {
     var passNumber: Int
     var flagBits: UInt32
-    var topCandidates: [InspectionReport.CandidateInfo] = []
-    var initialWinner: InspectionReport.CandidateInfo?
+    var topCandidates: [InspectionReport.Candidate] = []
+    var initialWinner: InspectionReport.Candidate?
     var promotionTrace: [InspectionReport.PromotionStep] = []
-    var finalCandidate: InspectionReport.CandidateInfo?
+    var finalCandidate: InspectionReport.Candidate?
     var candidateContext: InspectionReport.CandidateContext?
     var siblingDecisions: [InspectionReport.SiblingDecision] = []
     var siteRuleDecisions: [InspectionReport.SiteRuleDecision] = []
-    var contentSnapshot: InspectionReport.ContentSnapshotSummary?
+    var contentSnapshot: InspectionReport.ContentSnapshot?
   }
 
   // MARK: - State
@@ -29,7 +29,7 @@ final class InspectionContext {
   private let charThreshold: Int
   private var passes: [InspectionReport.PassAttempt] = []
   private var currentPass: PassBuilder?
-  private var cleanupSnapshots: [InspectionReport.CleanupSnapshotSummary] = []
+  private var cleanupSnapshots: [InspectionReport.CleanupSnapshot] = []
 
   init(charThreshold: Int) {
     self.charThreshold = charThreshold
@@ -46,11 +46,11 @@ final class InspectionContext {
     currentPass = PassBuilder(passNumber: number, flagBits: flagBits)
   }
 
-  func recordTopCandidates(_ candidates: [InspectionReport.CandidateInfo]) {
+  func recordTopCandidates(_ candidates: [InspectionReport.Candidate]) {
     currentPass?.topCandidates = candidates
   }
 
-  func recordInitialWinner(_ info: InspectionReport.CandidateInfo?) {
+  func recordInitialWinner(_ info: InspectionReport.Candidate?) {
     currentPass?.initialWinner = info
   }
 
@@ -60,7 +60,7 @@ final class InspectionContext {
     )
   }
 
-  func recordFinalCandidate(_ info: InspectionReport.CandidateInfo?) {
+  func recordFinalCandidate(_ info: InspectionReport.Candidate?) {
     currentPass?.finalCandidate = info
   }
 
@@ -101,7 +101,7 @@ final class InspectionContext {
         score: score,
         bonus: bonus,
         threshold: threshold,
-        visible: visible,
+        isVisible: visible,
         decision: decision,
         reason: reason,
         siteRuleDecisionID: siteRuleDecisionID
@@ -151,7 +151,7 @@ final class InspectionContext {
       wrapperDescriptor = nil
       wrapperPath = nil
     }
-    currentPass?.contentSnapshot = InspectionReport.ContentSnapshotSummary(
+    currentPass?.contentSnapshot = InspectionReport.ContentSnapshot(
       selectedCandidateDescriptor: DOMDebugFormatting.conciseElementDescriptor(selectedCandidate),
       selectedCandidatePath: InspectionDOMHelpers.nodePath(selectedCandidate),
       articleChildCount: articleContent.children().count,
@@ -160,7 +160,7 @@ final class InspectionContext {
       wrapperDescriptor: wrapperDescriptor,
       wrapperPath: wrapperPath,
       leadingBlocks: Array(leadingSource.prefix(8)).map {
-        InspectionReport.ContentSnapshotSummary.BlockSummary(
+        InspectionReport.BlockSummary(
           descriptor: DOMDebugFormatting.conciseElementDescriptor($0),
           path: InspectionDOMHelpers.nodePath($0),
           childCount: $0.children().count,
@@ -194,8 +194,8 @@ final class InspectionContext {
         siteRuleDecisions: pass.siteRuleDecisions,
         contentSnapshot: pass.contentSnapshot,
         contentLength: contentLength,
-        charThreshold: charThreshold,
-        accepted: accepted
+        minimumCharacterCount: charThreshold,
+        isAccepted: accepted
       )
     )
     currentPass = nil
@@ -203,13 +203,13 @@ final class InspectionContext {
 
   func recordCleanupSnapshot(stage: String, articleContent: Element) {
     cleanupSnapshots.append(
-      InspectionReport.CleanupSnapshotSummary(
+      InspectionReport.CleanupSnapshot(
         stage: stage,
         contentLength: ((try? articleContent.text()) ?? "").count,
         articleChildCount: articleContent.children().count,
         articleChildDescriptors: articleContent.children().map(DOMDebugFormatting.conciseElementDescriptor),
         leadingBlocks: Array(articleContent.children().prefix(8)).map {
-          InspectionReport.FinalContentSnapshotSummary.BlockSummary(
+          InspectionReport.BlockSummary(
             descriptor: DOMDebugFormatting.conciseElementDescriptor($0),
             path: InspectionDOMHelpers.nodePath($0),
             childCount: $0.children().count,
@@ -226,7 +226,7 @@ final class InspectionContext {
     InspectionReport(
       passes: passes,
       finalContentSnapshot: cleanupSnapshots.last.map {
-        InspectionReport.FinalContentSnapshotSummary(
+        InspectionReport.FinalContentSnapshot(
           contentLength: $0.contentLength,
           articleChildCount: $0.articleChildCount,
           articleChildDescriptors: $0.articleChildDescriptors,

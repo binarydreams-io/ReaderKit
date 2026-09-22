@@ -4,7 +4,7 @@
 
 import Foundation
 
-/// Configuration options for Readability parsing
+/// Configuration options for Readability parsing.
 public struct ReadabilityOptions: Sendable {
   /// Maximum number of elements to parse (0 = no limit). Mirrors upstream's DoS
   /// guard: extraction aborts with `ReadabilityError.tooManyElements` before
@@ -15,10 +15,10 @@ public struct ReadabilityOptions: Sendable {
   public var topCandidateCount: Int
 
   /// Minimum character count for valid content.
-  public var charThreshold: Int
+  public var minimumCharacterCount: Int
 
-  /// Preserve CSS classes in output HTML.
-  public var keepClasses: Bool
+  /// Whether the output HTML keeps its CSS classes.
+  public var preservesClasses: Bool
 
   /// Parse JSON-LD metadata when present.
   public var parsesJSONLD: Bool
@@ -26,8 +26,10 @@ public struct ReadabilityOptions: Sendable {
   /// Classes to preserve in the output (in addition to defaults).
   public var classesToPreserve: [String]
 
-  /// Regex pattern for allowed video URLs.
-  public var allowedVideoRegex: String
+  /// A regular expression that matches the URLs of allowed video embeds.
+  ///
+  /// An empty string selects the built-in pattern.
+  public var allowedVideoURLPattern: String
 
   /// Modifier for link density calculation.
   public var linkDensityModifier: Double
@@ -35,7 +37,42 @@ public struct ReadabilityOptions: Sendable {
   /// Enable debug logging.
   public var isDebugLoggingEnabled: Bool
 
-  /// Creates a new ReadabilityOptions instance with default values.
+  /// Creates options with the given values. Each omitted value uses its default.
+  public init(
+    maxElementsToParse: Int = 0,
+    topCandidateCount: Int = 5,
+    minimumCharacterCount: Int = 500,
+    preservesClasses: Bool = false,
+    parsesJSONLD: Bool = true,
+    classesToPreserve: [String] = [],
+    allowedVideoURLPattern: String = "",
+    linkDensityModifier: Double = 0.0,
+    isDebugLoggingEnabled: Bool = false
+  ) {
+    self.maxElementsToParse = maxElementsToParse
+    self.topCandidateCount = topCandidateCount
+    self.minimumCharacterCount = minimumCharacterCount
+    self.preservesClasses = preservesClasses
+    self.parsesJSONLD = parsesJSONLD
+    self.classesToPreserve = classesToPreserve
+    self.allowedVideoURLPattern = allowedVideoURLPattern.isEmpty
+      ? Configuration.defaultVideoRegex
+      : allowedVideoURLPattern
+    self.linkDensityModifier = linkDensityModifier
+    self.isDebugLoggingEnabled = isDebugLoggingEnabled
+  }
+
+  /// The options with all default values.
+  public static let `default` = ReadabilityOptions()
+}
+
+extension ReadabilityOptions {
+  @_disfavoredOverload
+  @available(
+    *,
+    deprecated,
+    renamed: "init(maxElementsToParse:topCandidateCount:minimumCharacterCount:preservesClasses:parsesJSONLD:classesToPreserve:allowedVideoURLPattern:linkDensityModifier:isDebugLoggingEnabled:)"
+  )
   public init(
     maxElementsToParse: Int = 0,
     topCandidateCount: Int = 5,
@@ -47,19 +84,34 @@ public struct ReadabilityOptions: Sendable {
     linkDensityModifier: Double = 0.0,
     isDebugLoggingEnabled: Bool = false
   ) {
-    self.maxElementsToParse = maxElementsToParse
-    self.topCandidateCount = topCandidateCount
-    self.charThreshold = charThreshold
-    self.keepClasses = keepClasses
-    self.parsesJSONLD = parsesJSONLD
-    self.classesToPreserve = classesToPreserve
-    self.allowedVideoRegex = allowedVideoRegex.isEmpty
-      ? Configuration.defaultVideoRegex
-      : allowedVideoRegex
-    self.linkDensityModifier = linkDensityModifier
-    self.isDebugLoggingEnabled = isDebugLoggingEnabled
+    self.init(
+      maxElementsToParse: maxElementsToParse,
+      topCandidateCount: topCandidateCount,
+      minimumCharacterCount: charThreshold,
+      preservesClasses: keepClasses,
+      parsesJSONLD: parsesJSONLD,
+      classesToPreserve: classesToPreserve,
+      allowedVideoURLPattern: allowedVideoRegex,
+      linkDensityModifier: linkDensityModifier,
+      isDebugLoggingEnabled: isDebugLoggingEnabled
+    )
   }
 
-  /// Default options instance
-  public static let `default` = ReadabilityOptions()
+  @available(*, deprecated, renamed: "minimumCharacterCount")
+  public var charThreshold: Int {
+    get { minimumCharacterCount }
+    set { minimumCharacterCount = newValue }
+  }
+
+  @available(*, deprecated, renamed: "preservesClasses")
+  public var keepClasses: Bool {
+    get { preservesClasses }
+    set { preservesClasses = newValue }
+  }
+
+  @available(*, deprecated, renamed: "allowedVideoURLPattern")
+  public var allowedVideoRegex: String {
+    get { allowedVideoURLPattern }
+    set { allowedVideoURLPattern = newValue }
+  }
 }

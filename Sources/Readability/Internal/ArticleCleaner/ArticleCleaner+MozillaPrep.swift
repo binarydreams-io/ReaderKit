@@ -283,7 +283,7 @@ extension ArticleCleaner {
   }
 
   func removeShortShareElements(_ articleContent: Element) throws {
-    let shareElementThreshold = options.charThreshold
+    let shareElementThreshold = options.minimumCharacterCount
 
     for topCandidate in articleContent.children() {
       let candidates = try topCandidate.select("[class*=share], [id*=share], [class*=sharedaddy], [id*=sharedaddy]")
@@ -576,7 +576,7 @@ extension ArticleCleaner {
   }
 
   private func isAllowedVideoEmbed(_ element: Element) -> Bool {
-    let pattern = options.allowedVideoRegex
+    let pattern = options.allowedVideoURLPattern
 
     if let attrs = element.getAttributes() {
       for attr in attrs {

@@ -7,7 +7,7 @@ import Testing
 
 @Suite("Telegram post rule")
 struct TelegramPostRuleTests {
-  private let options = ReadabilityOptions(charThreshold: 500, classesToPreserve: ["caption"])
+  private let options = ReadabilityOptions(minimumCharacterCount: 500, classesToPreserve: ["caption"])
 
   @Test(arguments: ["telegram-post-photo", "telegram-post-text"])
   func `A Telegram embed page reads as the post's media and text`(fixture: String) throws {

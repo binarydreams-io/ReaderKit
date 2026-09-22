@@ -51,10 +51,10 @@ RichText maps emphasis, strong text, inline code, deletion, and links to native 
 ```swift
 public struct ArticleImage: Sendable, Equatable {
   public let url: URL
-  public let alt: String?
+  public let altText: String?
   public let caption: String?
 
-  public init(url: URL, alt: String? = nil, caption: String? = nil)
+  public init(url: URL, altText: String? = nil, caption: String? = nil)
 }
 ```
 
@@ -118,7 +118,7 @@ This separation lets a reading app change themes without rebuilding `[ArticleBlo
 
 ```swift
 public struct RichTextView: View {
-  public init(blocks: [ArticleBlock], style: ReaderStyle)
+  public init(blocks: [ArticleBlock], style: ReaderStyle = ReaderStyle())
 }
 ```
 

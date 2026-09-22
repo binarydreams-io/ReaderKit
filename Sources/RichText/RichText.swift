@@ -14,7 +14,12 @@ public struct RichText {
   let root: Element
   let baseURL: URL?
 
-  /// Parse `html` once and prepare it for block extraction.
+  /// Creates a converter that parses `html` once for block extraction.
+  ///
+  /// - Parameters:
+  ///   - html: The HTML to convert.
+  ///   - baseURL: The URL that resolves relative image and link URLs.
+  /// - Throws: A SwiftSoup parsing error if the HTML cannot be parsed.
   public init(html: String, baseURL: URL? = nil) throws {
     if let baseURL {
       self.root = try SwiftSoup.parse(html, baseURL.absoluteString).body() ?? SwiftSoup.parse(html)
@@ -36,6 +41,10 @@ public struct RichText {
     (try? root.select("#readability-page-1").first()) ?? root
   }
 
+  /// Returns the block-level content of the article.
+  ///
+  /// - Throws: `CancellationError` if the current task is cancelled,
+  ///   or a SwiftSoup error if a DOM query fails.
   public func blocks() throws -> [ArticleBlock] {
     try Task.checkCancellation()
     return try parseBlocks(in: contentRoot)

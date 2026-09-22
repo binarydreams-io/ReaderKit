@@ -94,15 +94,15 @@ extension Readability {
     let initialExtraction: (content: Element, byline: String?, neededToCreate: Bool, dir: String?, lang: String?, flags: UInt32)
     do {
       initialExtraction = try extractor.extract()
-    } catch let ReadabilityError.contentTooShort(actualLength, threshold) {
+    } catch let ReadabilityError.contentTooShort(length, minimumLength) {
       guard let recoveredContent = try SiteRuleRegistry.shortContentFallbackArticle(
         in: doc,
         sourceURL: sourceURL,
         inspectionContext: inspectionContext
       ) else {
         throw ReadabilityError.contentTooShort(
-          actualLength: actualLength,
-          threshold: threshold
+          length: length,
+          minimumLength: minimumLength
         )
       }
 

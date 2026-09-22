@@ -11,7 +11,7 @@ let html = """
 """
 let result = try Readability(
   html: html,
-  options: ReadabilityOptions(charThreshold: 0)
+  options: ReadabilityOptions(minimumCharacterCount: 0)
 ).parse()
 
 print("Readability consumer: \(result.title)")

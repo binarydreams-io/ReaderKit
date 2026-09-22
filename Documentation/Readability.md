@@ -54,9 +54,12 @@ Its public initializer accepts all fields listed below.
 | `content` | `String` | Cleaned article HTML |
 | `textContent` | `String` | Plain article text |
 | `excerpt` | `String?` | Extracted summary |
-| `length` | `Int` | Character count of `textContent` |
+| `textLength` | `Int` | Character count of `textContent` |
 | `siteName` | `String?` | Extracted publication name |
-| `publishedTime` | `String?` | Extracted publication time string |
+| `publishedTime` | `String?` | Publication time exactly as the page metadata gives it |
+
+The computed `publishedDate` property parses `publishedTime` as an ISO 8601 date or date-time.
+It is `nil` when the page uses a different format.
 
 ## ReadabilityOptions
 
@@ -67,11 +70,11 @@ The public initializer also accepts each option below.
 | --- | --- | --- |
 | `maxElementsToParse` | `0` | Maximum element count. Zero disables the limit. |
 | `topCandidateCount` | `5` | Number of high-scoring candidates to inspect. |
-| `charThreshold` | `500` | Minimum accepted article length before retry passes. |
-| `keepClasses` | `false` | Preserves CSS class attributes in output. |
+| `minimumCharacterCount` | `500` | Minimum accepted article length before retry passes. |
+| `preservesClasses` | `false` | Preserves CSS class attributes in output. |
 | `parsesJSONLD` | `true` | Enables JSON-LD metadata extraction. |
 | `classesToPreserve` | `[]` | Preserves selected classes when other classes are removed. |
-| `allowedVideoRegex` | Built-in expression | Keeps embeds from recognized video hosts. |
+| `allowedVideoURLPattern` | Built-in expression | Keeps embeds from recognized video hosts. An empty string selects the built-in expression. |
 | `linkDensityModifier` | `0.0` | Adjusts conditional-cleaning link-density thresholds. |
 | `isDebugLoggingEnabled` | `false` | Enables parser diagnostics in OSLog. |
 
@@ -80,7 +83,7 @@ Set a finite `maxElementsToParse` when the application accepts untrusted or unbo
 ```swift
 let options = ReadabilityOptions(
   maxElementsToParse: 40_000,
-  charThreshold: 300,
+  minimumCharacterCount: 300,
   classesToPreserve: ["caption"]
 )
 ```
@@ -110,11 +113,11 @@ All report values are read-only and `Sendable`.
 | Case | Meaning |
 | --- | --- |
 | `.noContent` | The parser did not find readable content. |
-| `.contentTooShort(actualLength:threshold:)` | Extracted text did not reach the configured threshold. |
+| `.contentTooShort(length:minimumLength:)` | Extracted text did not reach `minimumCharacterCount`. |
 | `.parsingFailed(underlying:)` | An underlying parser operation failed. |
 | `.invalidHTML` | The input could not be interpreted as HTML. |
-| `.elementNotFound(_:)` | A required DOM element was absent. |
-| `.tooManyElements(actual:limit:)` | The document exceeded `maxElementsToParse`. |
+| `.elementNotFound(selector:)` | A required DOM element was absent. |
+| `.tooManyElements(count:limit:)` | The document exceeded `maxElementsToParse`. |
 
 ## HTML String Helpers
 

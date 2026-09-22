@@ -21,8 +21,8 @@ struct ImageBlockView: View {
       }
       .frame(maxWidth: .infinity)
       .clipShape(RoundedRectangle(cornerRadius: 8))
-      .accessibilityLabel(image.alt ?? image.caption ?? "")
-      .accessibilityHidden(image.alt == nil && image.caption == nil)
+      .accessibilityLabel(image.altText ?? image.caption ?? "")
+      .accessibilityHidden(image.altText == nil && image.caption == nil)
 
       if let caption = image.caption {
         Text(caption)

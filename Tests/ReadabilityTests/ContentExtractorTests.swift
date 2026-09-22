@@ -101,7 +101,7 @@ struct ContentExtractorTests {
     """
     let doc = try SwiftSoup.parse(html)
 
-    let options = ReadabilityOptions(charThreshold: 100)
+    let options = ReadabilityOptions(minimumCharacterCount: 100)
     let extractor = ContentExtractor(doc: doc, options: options)
 
     // Will return best attempt even if below threshold
@@ -126,7 +126,7 @@ struct ContentExtractorTests {
     """
     let doc = try SwiftSoup.parse(html)
 
-    let options = ReadabilityOptions(charThreshold: 500)
+    let options = ReadabilityOptions(minimumCharacterCount: 500)
     let extractor = ContentExtractor(doc: doc, options: options)
 
     // Returns best attempt even if below threshold
@@ -148,7 +148,7 @@ struct ContentExtractorTests {
     """
     let doc = try SwiftSoup.parse(html)
 
-    let options = ReadabilityOptions(charThreshold: 200)
+    let options = ReadabilityOptions(minimumCharacterCount: 200)
     let extractor = ContentExtractor(doc: doc, options: options)
 
     // First attempt will fail, then fallback
@@ -198,7 +198,7 @@ struct ContentExtractorTests {
     """
     let doc = try SwiftSoup.parse(html)
 
-    let options = ReadabilityOptions(charThreshold: 500)
+    let options = ReadabilityOptions(minimumCharacterCount: 500)
     let extractor = ContentExtractor(doc: doc, options: options)
 
     // Returns best attempt even if below threshold
@@ -313,7 +313,7 @@ struct ContentExtractorTests {
   // MARK: - Configuration Tests
 
   @Test
-  func `extract respects charThreshold option`() throws {
+  func `extract respects minimumCharacterCount option`() throws {
     let html = """
     <html><body>
     <p>Content here.</p>
@@ -322,7 +322,7 @@ struct ContentExtractorTests {
     let doc = try SwiftSoup.parse(html)
 
     // High threshold will return best attempt
-    let strictOptions = ReadabilityOptions(charThreshold: 500)
+    let strictOptions = ReadabilityOptions(minimumCharacterCount: 500)
     let strictExtractor = ContentExtractor(doc: doc, options: strictOptions)
 
     let strictResult = try strictExtractor.extract()
@@ -330,7 +330,7 @@ struct ContentExtractorTests {
     #expect(strictText.count > 0) // Returns best attempt
 
     // Low threshold should succeed normally
-    let lenientOptions = ReadabilityOptions(charThreshold: 5)
+    let lenientOptions = ReadabilityOptions(minimumCharacterCount: 5)
     let lenientExtractor = ContentExtractor(doc: doc, options: lenientOptions)
 
     let result = try lenientExtractor.extract()

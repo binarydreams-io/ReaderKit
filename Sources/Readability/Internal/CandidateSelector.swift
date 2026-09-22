@@ -368,8 +368,8 @@ final class CandidateSelector {
 
   // MARK: - Inspection Helpers
 
-  /// Build an `InspectionReport.CandidateInfo` snapshot for the given element.
-  private func makeCandidateInfo(_ element: Element, flagWeightClasses: Bool) -> InspectionReport.CandidateInfo {
+  /// Build an `InspectionReport.Candidate` snapshot for the given element.
+  private func makeCandidateInfo(_ element: Element, flagWeightClasses: Bool) -> InspectionReport.Candidate {
     let finalScore = scoringManager.getContentScore(for: element)
     let base = scoringManager.getBaseScore(for: element)
     let (classWeight, cwTuples) = scoringManager.getClassWeightWithBreakdown(
@@ -384,7 +384,7 @@ final class CandidateSelector {
         points: $0.points
       )
     }
-    return InspectionReport.CandidateInfo(
+    return InspectionReport.Candidate(
       descriptor: DOMDebugFormatting.conciseElementDescriptor(element),
       path: InspectionDOMHelpers.nodePath(element),
       depth: InspectionDOMHelpers.elementDepth(element),

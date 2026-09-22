@@ -20,7 +20,7 @@ struct MozillaCompatibilityTests {
 
   /// Default options matching Mozilla's test setup
   private let defaultOptions = ReadabilityOptions(
-    charThreshold: 500,
+    minimumCharacterCount: 500,
     classesToPreserve: ["caption"]
   )
 

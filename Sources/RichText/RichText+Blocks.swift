@@ -131,7 +131,7 @@ extension RichText {
 
     return .image(ArticleImage(
       url: url,
-      alt: (alt?.isEmpty == false) ? alt : nil,
+      altText: (alt?.isEmpty == false) ? alt : nil,
       caption: (caption?.isEmpty == false) ? caption : nil
     ))
   }

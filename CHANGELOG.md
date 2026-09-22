@@ -4,7 +4,21 @@ ReaderKit follows [Semantic Versioning](https://semver.org/).
 
 ## Unreleased
 
+### Added
+
+- `ReadabilityResult.publishedDate` parses `publishedTime` as an ISO 8601 date or date-time.
+- Doc comments for the public RichText model types, `ReaderStyle`, `ReadabilityResult`, and `InspectionReport`.
+
 ### Changed
+
+- Renamed public API to follow the Swift API Design Guidelines. The old names stay available as deprecated aliases:
+  - `ReadabilityResult.length` is now `textLength`.
+  - `ReadabilityOptions.charThreshold`, `keepClasses`, and `allowedVideoRegex` are now `minimumCharacterCount`, `preservesClasses`, and `allowedVideoURLPattern`.
+  - `ReadabilityError` cases are now `contentTooShort(length:minimumLength:)`, `elementNotFound(selector:)`, and `tooManyElements(count:limit:)`. Patterns that use the old argument labels, for example `.tooManyElements(actual: let count, limit: _)`, do not compile. Patterns without labels continue to work.
+  - `ArticleImage.alt` is now `altText`.
+  - `InspectionReport.CandidateInfo`, `ContentSnapshotSummary`, `FinalContentSnapshotSummary`, and `CleanupSnapshotSummary` are now `Candidate`, `ContentSnapshot`, `FinalContentSnapshot`, and `CleanupSnapshot`. All snapshots share one `InspectionReport.BlockSummary` type.
+  - `InspectionReport.SiblingDecision.visible` is now `isVisible`. `PassAttempt.accepted` and `charThreshold` are now `isAccepted` and `minimumCharacterCount`.
+- `RichTextView.init(blocks:style:)` uses the default `ReaderStyle` when you omit `style`.
 
 - The package-notice check no longer pins dependency versions in `Licenses/Package-Notices.tsv`. It verifies that every resolved package has a notice and that each notice matches the license shipped in the resolved checkout, so a dependency bump passes the quality gate without a manifest edit and a license change still fails it.
 

@@ -62,12 +62,12 @@ final class ContentExtractor {
     if options.maxElementsToParse > 0 {
       let elementCount = try doc.getAllElements().count
       if elementCount > options.maxElementsToParse {
-        throw ReadabilityError.tooManyElements(actual: elementCount, limit: options.maxElementsToParse)
+        throw ReadabilityError.tooManyElements(count: elementCount, limit: options.maxElementsToParse)
       }
     }
 
     guard let body = doc.body() else {
-      throw ReadabilityError.elementNotFound("body")
+      throw ReadabilityError.elementNotFound(selector: "body")
     }
 
     let articleLang = extractDocumentLanguage()
@@ -109,7 +109,7 @@ final class ContentExtractor {
         contentLength: textLength
       )
 
-      if textLength >= options.charThreshold {
+      if textLength >= options.minimumCharacterCount {
         // Success!
         inspectionContext?.endPass(contentLength: textLength, accepted: true)
         result = (
@@ -160,8 +160,8 @@ final class ContentExtractor {
         } else {
           // Complete failure
           throw ReadabilityError.contentTooShort(
-            actualLength: textLength,
-            threshold: options.charThreshold
+            length: textLength,
+            minimumLength: options.minimumCharacterCount
           )
         }
       }

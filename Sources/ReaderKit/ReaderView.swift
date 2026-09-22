@@ -22,6 +22,7 @@ public struct ReaderView: View {
   @State private var blocks: [ArticleBlock] = []
   @State private var isLoading = true
 
+  /// Creates a reader for the article at `link`.
   public init(link: URL, style: ReaderStyle = .init()) {
     self.link = link
     self.style = style

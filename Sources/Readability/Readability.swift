@@ -5,13 +5,19 @@
 import Foundation
 import SwiftSoup
 
-/// Swift implementation of Mozilla's Readability.js
-/// Extracts readable content from web pages
+/// A Swift implementation of Mozilla's Readability.js that extracts readable content from web pages.
 public struct Readability: ~Copyable {
   let doc: Document
   let options: ReadabilityOptions
 
-  /// Initialize with HTML string and optional configuration
+  /// Creates a parser for an HTML document.
+  ///
+  /// - Parameters:
+  ///   - html: The HTML of the page.
+  ///   - baseURL: The URL of the page. The parser uses it to resolve relative URLs
+  ///     and to select site rules.
+  ///   - options: The extraction options.
+  /// - Throws: A SwiftSoup parsing error if the HTML cannot be parsed.
   public init(html: String, baseURL: URL? = nil, options: ReadabilityOptions = .default) throws {
     if let baseURL {
       self.doc = try SwiftSoup.parse(html, baseURL.absoluteString)
@@ -21,17 +27,19 @@ public struct Readability: ~Copyable {
     self.options = options
   }
 
-  /// Parse the document and extract readable content.
-  /// Consumes the instance — `Readability` mutates its internal `Document` during extraction
-  /// and is not reusable.
+  /// Parses the document and returns its readable content.
+  ///
+  /// This method consumes the instance. Extraction mutates the internal `Document`,
+  /// so you cannot use a `Readability` value again.
   public consuming func parse() throws -> ReadabilityResult {
     try executeParse(inspectionContext: nil)
   }
 
-  /// Parse the document and return the result together with a full extraction trace.
-  /// Consumes the instance — see `parse()`.
+  /// Parses the document and returns the result together with a full extraction trace.
+  ///
+  /// This method consumes the instance. See `parse()`.
   public consuming func parseWithInspection() throws -> (result: ReadabilityResult, report: InspectionReport) {
-    let ctx = InspectionContext(charThreshold: options.charThreshold)
+    let ctx = InspectionContext(charThreshold: options.minimumCharacterCount)
     let result = try executeParse(inspectionContext: ctx)
     return (result, ctx.buildReport())
   }

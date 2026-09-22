@@ -103,7 +103,7 @@ struct RichTextBlockTests {
       return
     }
     #expect(image.url.absoluteString == "https://example.com/a.png")
-    #expect(image.alt == "Alt")
+    #expect(image.altText == "Alt")
   }
 
   @Test
@@ -142,7 +142,7 @@ struct RichTextBlockTests {
       return
     }
     #expect(image.url.absoluteString == "https://example.com/p.jpg")
-    #expect(image.alt == "Pic")
+    #expect(image.altText == "Pic")
   }
 
   @Test

@@ -99,7 +99,7 @@ extension Readability {
       return nil
     }
 
-    let threshold = max(options.charThreshold, Configuration.defaultCharThreshold)
+    let threshold = max(options.minimumCharacterCount, Configuration.defaultCharThreshold)
     let textLength = try DOMHelpers.getInnerText(semanticRoot).count
     let paragraphCount = try semanticRoot.select("p").count
     let linkDensity = try getLinkDensity(semanticRoot)

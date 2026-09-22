@@ -28,7 +28,7 @@ extension Readability {
     try fixRelativeURIs(cleaned)
     try simplifyNestedElements(cleaned)
     try SiteRuleRegistry.applySerializationRules(to: cleaned, sourceURL: sourceURL)
-    if !options.keepClasses {
+    if !options.preservesClasses {
       try cleanClasses(cleaned)
     }
     try trimParagraphBoundaryWhitespace(cleaned)

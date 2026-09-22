@@ -231,7 +231,7 @@ struct ReadabilityTests {
     let readability = try Readability(
       html: html,
       baseURL: URL(string: "https://maurycyz.com/projects/mcufont/"),
-      options: ReadabilityOptions(charThreshold: 120)
+      options: ReadabilityOptions(minimumCharacterCount: 120)
     )
     let result = try readability.parse()
     let doc = try SwiftSoup.parseBodyFragment(result.content)

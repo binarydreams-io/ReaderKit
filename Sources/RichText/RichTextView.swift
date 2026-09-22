@@ -9,7 +9,8 @@ public struct RichTextView: View {
   private let blocks: [ArticleBlock]
   private let style: ReaderStyle
 
-  public init(blocks: [ArticleBlock], style: ReaderStyle) {
+  /// Creates a view that renders `blocks` with the given style.
+  public init(blocks: [ArticleBlock], style: ReaderStyle = ReaderStyle()) {
     self.blocks = blocks
     self.style = style
   }

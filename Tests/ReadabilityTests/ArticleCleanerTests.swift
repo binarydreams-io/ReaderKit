@@ -566,12 +566,12 @@ struct ArticleCleanerTests {
   }
 
   @Test
-  func `cleanStyles preserves classes when keepClasses is true`() throws {
+  func `cleanStyles preserves classes when preservesClasses is true`() throws {
     let html = "<p class='content main'>Text</p>"
     let doc = try SwiftSoup.parseBodyFragment(html)
     let p = try #require(doc.select("p").first())
 
-    let options = ReadabilityOptions(keepClasses: true)
+    let options = ReadabilityOptions(preservesClasses: true)
     let cleaner = ArticleCleaner(options: options)
     try cleaner.prepArticle(p)
 
