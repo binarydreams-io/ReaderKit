@@ -6,3 +6,4 @@ Tests/ReadabilityTests/ReadabilityExtractContentTests.swift
 Tests/ReadabilityTests/StringHTMLTests.swift
 Sources/Readability/Internal/SiteRules/Rules/TelegramPostRule.swift
 Tests/ReadabilityTests/TelegramPostRuleTests.swift
+Tests/ReadabilityTests/ReadabilityResultTests.swift
