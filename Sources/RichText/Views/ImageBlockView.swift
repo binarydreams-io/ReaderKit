@@ -12,7 +12,7 @@ struct ImageBlockView: View {
     VStack(alignment: .leading, spacing: 8) {
       LazyImage(url: image.url) { state in
         if let img = state.image {
-          img.resizable().aspectRatio(contentMode: .fit)
+          img.resizable().scaledToFit()
         } else if state.error != nil {
           Color.clear.frame(height: 0)
         } else {

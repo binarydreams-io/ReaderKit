@@ -17,7 +17,7 @@ struct EmbedBlockView: View {
           if let posterURL {
             LazyImage(url: posterURL) { state in
               if let img = state.image {
-                img.resizable().aspectRatio(contentMode: .fit)
+                img.resizable().scaledToFit()
               } else {
                 Rectangle().fill(.quaternary).aspectRatio(16.0 / 9.0, contentMode: .fit)
               }
