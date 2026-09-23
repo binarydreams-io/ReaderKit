@@ -151,7 +151,7 @@ public struct InspectionReport: Sendable {
     /// DOM path for the single wrapper, if there is one.
     public let wrapperPath: String?
     /// The first blocks of the article content.
-    public let leadingBlocks: [InspectionReport.BlockSummary]
+    public let leadingBlocks: [BlockSummary]
     /// Character count of the article text.
     public let contentLength: Int
   }
@@ -165,7 +165,7 @@ public struct InspectionReport: Sendable {
     /// Descriptors of the top-level children in the article content.
     public let articleChildDescriptors: [String]
     /// The first blocks of the article content.
-    public let leadingBlocks: [InspectionReport.BlockSummary]
+    public let leadingBlocks: [BlockSummary]
   }
 
   /// Snapshot captured at a named cleanup stage.
@@ -222,49 +222,4 @@ public struct InspectionReport: Sendable {
 
   /// Intermediate snapshots captured during cleanup.
   public let cleanupSnapshots: [CleanupSnapshot]
-}
-
-// MARK: - Deprecated Names
-
-extension InspectionReport {
-  @available(*, deprecated, renamed: "InspectionReport.Candidate")
-  public typealias CandidateInfo = Candidate
-
-  @available(*, deprecated, renamed: "InspectionReport.ContentSnapshot")
-  public typealias ContentSnapshotSummary = ContentSnapshot
-
-  @available(*, deprecated, renamed: "InspectionReport.FinalContentSnapshot")
-  public typealias FinalContentSnapshotSummary = FinalContentSnapshot
-
-  @available(*, deprecated, renamed: "InspectionReport.CleanupSnapshot")
-  public typealias CleanupSnapshotSummary = CleanupSnapshot
-}
-
-extension InspectionReport.ContentSnapshot {
-  @available(*, deprecated, renamed: "InspectionReport.BlockSummary")
-  public typealias BlockSummary = InspectionReport.BlockSummary
-}
-
-extension InspectionReport.FinalContentSnapshot {
-  @available(*, deprecated, renamed: "InspectionReport.BlockSummary")
-  public typealias BlockSummary = InspectionReport.BlockSummary
-}
-
-extension InspectionReport.SiblingDecision {
-  @available(*, deprecated, renamed: "isVisible")
-  public var visible: Bool {
-    isVisible
-  }
-}
-
-extension InspectionReport.PassAttempt {
-  @available(*, deprecated, renamed: "minimumCharacterCount")
-  public var charThreshold: Int {
-    minimumCharacterCount
-  }
-
-  @available(*, deprecated, renamed: "isAccepted")
-  public var accepted: Bool {
-    isAccepted
-  }
 }

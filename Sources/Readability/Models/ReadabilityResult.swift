@@ -76,9 +76,4 @@ extension ReadabilityResult {
     }
     return nil
   }
-
-  @available(*, deprecated, renamed: "textLength")
-  public var length: Int {
-    textLength
-  }
 }

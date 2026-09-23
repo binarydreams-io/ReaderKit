@@ -42,20 +42,3 @@ public enum ReadabilityError: Error, CustomStringConvertible, Sendable {
     }
   }
 }
-
-extension ReadabilityError {
-  @available(*, deprecated, renamed: "contentTooShort(length:minimumLength:)")
-  public static func contentTooShort(actualLength: Int, threshold: Int) -> Self {
-    .contentTooShort(length: actualLength, minimumLength: threshold)
-  }
-
-  @available(*, deprecated, renamed: "elementNotFound(selector:)")
-  public static func elementNotFound(_ selector: String) -> Self {
-    .elementNotFound(selector: selector)
-  }
-
-  @available(*, deprecated, renamed: "tooManyElements(count:limit:)")
-  public static func tooManyElements(actual: Int, limit: Int) -> Self {
-    .tooManyElements(count: actual, limit: limit)
-  }
-}

@@ -19,15 +19,3 @@ public struct ArticleImage: Sendable, Equatable {
     self.caption = caption
   }
 }
-
-extension ArticleImage {
-  @available(*, deprecated, renamed: "init(url:altText:caption:)")
-  public init(url: URL, alt: String?, caption: String? = nil) {
-    self.init(url: url, altText: alt, caption: caption)
-  }
-
-  @available(*, deprecated, renamed: "altText")
-  public var alt: String? {
-    altText
-  }
-}
