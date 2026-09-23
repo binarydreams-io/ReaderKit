@@ -2,7 +2,10 @@
 
 ReaderKit follows [Semantic Versioning](https://semver.org/).
 
-## Unreleased
+## 2.0.0 - 2026-09-23
+
+ReaderKit 2.0 renames public API to follow the Swift API Design Guidelines.
+The old names are removed. Use the migration table below to update your code.
 
 ### Added
 
@@ -11,16 +14,32 @@ ReaderKit follows [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
-- Renamed public API to follow the Swift API Design Guidelines. The old names stay available as deprecated aliases:
-  - `ReadabilityResult.length` is now `textLength`.
-  - `ReadabilityOptions.charThreshold`, `keepClasses`, and `allowedVideoRegex` are now `minimumCharacterCount`, `preservesClasses`, and `allowedVideoURLPattern`.
-  - `ReadabilityError` cases are now `contentTooShort(length:minimumLength:)`, `elementNotFound(selector:)`, and `tooManyElements(count:limit:)`. Patterns that use the old argument labels, for example `.tooManyElements(actual: let count, limit: _)`, do not compile. Patterns without labels continue to work.
-  - `ArticleImage.alt` is now `altText`.
-  - `InspectionReport.CandidateInfo`, `ContentSnapshotSummary`, `FinalContentSnapshotSummary`, and `CleanupSnapshotSummary` are now `Candidate`, `ContentSnapshot`, `FinalContentSnapshot`, and `CleanupSnapshot`. All snapshots share one `InspectionReport.BlockSummary` type.
-  - `InspectionReport.SiblingDecision.visible` is now `isVisible`. `PassAttempt.accepted` and `charThreshold` are now `isAccepted` and `minimumCharacterCount`.
-- `RichTextView.init(blocks:style:)` uses the default `ReaderStyle` when you omit `style`.
-- The release toolchain is now Swift 6.4 with SwiftFormat 0.63.0 and SwiftLint 0.65.1. CI runs on the `xcode-27` GitHub runner. The package still requires Swift tools 6.2.
+- **Breaking:** Renamed public API. Replace each 1.x name with its 2.0 name:
 
+  | 1.x | 2.0 |
+  | --- | --- |
+  | `ReadabilityResult.length` | `ReadabilityResult.textLength` |
+  | `ReadabilityOptions.charThreshold` | `ReadabilityOptions.minimumCharacterCount` |
+  | `ReadabilityOptions.keepClasses` | `ReadabilityOptions.preservesClasses` |
+  | `ReadabilityOptions.allowedVideoRegex` | `ReadabilityOptions.allowedVideoURLPattern` |
+  | `ReadabilityError.contentTooShort(actualLength:threshold:)` | `ReadabilityError.contentTooShort(length:minimumLength:)` |
+  | `ReadabilityError.elementNotFound(_:)` | `ReadabilityError.elementNotFound(selector:)` |
+  | `ReadabilityError.tooManyElements(actual:limit:)` | `ReadabilityError.tooManyElements(count:limit:)` |
+  | `ArticleImage.alt`, `ArticleImage.init(url:alt:caption:)` | `ArticleImage.altText`, `ArticleImage.init(url:altText:caption:)` |
+  | `InspectionReport.CandidateInfo` | `InspectionReport.Candidate` |
+  | `InspectionReport.ContentSnapshotSummary` | `InspectionReport.ContentSnapshot` |
+  | `InspectionReport.FinalContentSnapshotSummary` | `InspectionReport.FinalContentSnapshot` |
+  | `InspectionReport.CleanupSnapshotSummary` | `InspectionReport.CleanupSnapshot` |
+  | `ContentSnapshotSummary.BlockSummary`, `FinalContentSnapshotSummary.BlockSummary` | `InspectionReport.BlockSummary` |
+  | `InspectionReport.SiblingDecision.visible` | `InspectionReport.SiblingDecision.isVisible` |
+  | `InspectionReport.PassAttempt.accepted` | `InspectionReport.PassAttempt.isAccepted` |
+  | `InspectionReport.PassAttempt.charThreshold` | `InspectionReport.PassAttempt.minimumCharacterCount` |
+
+  Patterns that match `ReadabilityError` cases without argument labels continue to work.
+
+- `RichTextView.init(blocks:style:)` uses the default `ReaderStyle` when you omit `style`.
+- `ImageBlockView` and `EmbedBlockView` use `scaledToFit()` for images. The layout does not change.
+- The release toolchain is now Swift 6.4 with SwiftFormat 0.63.0 and SwiftLint 0.65.1. CI runs on the `xcode-27` GitHub runner. The package still requires Swift tools 6.2.
 - The package-notice check no longer pins dependency versions in `Licenses/Package-Notices.tsv`. It verifies that every resolved package has a notice and that each notice matches the license shipped in the resolved checkout, so a dependency bump passes the quality gate without a manifest edit and a license change still fails it.
 
 ## 1.1.1 - 2026-08-26
