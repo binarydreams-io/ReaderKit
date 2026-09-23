@@ -39,6 +39,7 @@ The old names are removed. Use the migration table below to update your code.
 
 - `RichTextView.init(blocks:style:)` uses the default `ReaderStyle` when you omit `style`.
 - `ImageBlockView` and `EmbedBlockView` use `scaledToFit()` for images. The layout does not change.
+- Resolved SwiftSoup 2.13.9 in the package's own `Package.resolved`. The minimum version stays 2.11.2.
 - The release toolchain is now Swift 6.4 with SwiftFormat 0.63.0 and SwiftLint 0.65.1. CI runs on the `xcode-27` GitHub runner. The package still requires Swift tools 6.2.
 - The package-notice check no longer pins dependency versions in `Licenses/Package-Notices.tsv`. It verifies that every resolved package has a notice and that each notice matches the license shipped in the resolved checkout, so a dependency bump passes the quality gate without a manifest edit and a license change still fails it.
 
