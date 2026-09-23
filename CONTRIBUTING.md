@@ -1,7 +1,7 @@
 # Contributing
 
 ReaderKit uses Swift tools 6.2 and the Swift 6 language mode.
-The release toolchain is Swift 6.3.3.
+The release toolchain is Swift 6.4.
 
 ## Development
 

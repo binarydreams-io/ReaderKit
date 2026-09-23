@@ -15,7 +15,7 @@ jobs:
   release:
     name: Verify and publish release
     needs: quality
-    runs-on: macos-26
+    runs-on: xcode-27
     permissions:
       contents: write
     steps:

@@ -19,6 +19,7 @@ ReaderKit follows [Semantic Versioning](https://semver.org/).
   - `InspectionReport.CandidateInfo`, `ContentSnapshotSummary`, `FinalContentSnapshotSummary`, and `CleanupSnapshotSummary` are now `Candidate`, `ContentSnapshot`, `FinalContentSnapshot`, and `CleanupSnapshot`. All snapshots share one `InspectionReport.BlockSummary` type.
   - `InspectionReport.SiblingDecision.visible` is now `isVisible`. `PassAttempt.accepted` and `charThreshold` are now `isAccepted` and `minimumCharacterCount`.
 - `RichTextView.init(blocks:style:)` uses the default `ReaderStyle` when you omit `style`.
+- The release toolchain is now Swift 6.4 with SwiftFormat 0.63.0 and SwiftLint 0.65.1. CI runs on the `xcode-27` GitHub runner. The package still requires Swift tools 6.2.
 
 - The package-notice check no longer pins dependency versions in `Licenses/Package-Notices.tsv`. It verifies that every resolved package has a notice and that each notice matches the license shipped in the resolved checkout, so a dependency bump passes the quality gate without a manifest edit and a license change still fails it.
 
