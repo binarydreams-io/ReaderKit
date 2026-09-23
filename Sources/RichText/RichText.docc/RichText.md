@@ -10,7 +10,7 @@ let blocks = try RichText(
   baseURL: sourceURL
 ).blocks()
 
-RichTextView(blocks: blocks, style: ReaderStyle())
+RichTextView(blocks: blocks)
 ```
 
 The block model is independent of rendering settings.

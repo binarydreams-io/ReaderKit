@@ -43,7 +43,8 @@ The parser uses it to resolve relative URLs and select host-gated site rules.
 ## ReadabilityResult
 
 `ReadabilityResult` is a `Sendable` value.
-Its public initializer accepts all fields listed below.
+Its public initializer accepts the stored fields listed below.
+The initializer calculates `textLength` from `textContent`.
 
 | Property | Type | Meaning |
 | --- | --- | --- |
@@ -93,16 +94,22 @@ let options = ReadabilityOptions(
 `parseWithInspection()` returns the normal result and an `InspectionReport`.
 Use the report to debug extraction without changing the parser.
 
-The report contains:
+The report contains these properties:
 
-- `passes`: retry attempts and their acceptance decisions.
-- Candidate scores and class-weight components.
-- Candidate-promotion steps.
-- Sibling merge decisions.
-- Applied or skipped site-rule decisions.
-- Content-shape summaries for extraction passes.
-- `finalContentSnapshot`: the selected content before cleanup.
-- `cleanupSnapshots`: content summaries after named cleanup stages.
+- `passes`: one `PassAttempt` for each retry attempt, with its acceptance decision in `isAccepted`.
+- `finalContentSnapshot`: a `FinalContentSnapshot` of the article after cleanup and before serialization.
+- `cleanupSnapshots`: one `CleanupSnapshot` for each named cleanup stage.
+
+Each `PassAttempt` contains these values:
+
+- `topCandidates`, `initialWinner`, and `finalCandidate`: `Candidate` scores and class-weight components.
+- `promotionTrace`: the `PromotionStep` values of candidate promotion.
+- `candidateContext`: the ancestors and siblings of the selected candidate.
+- `siblingDecisions`: the `SiblingDecision` values of sibling merging.
+- `siteRuleDecisions`: the `SiteRuleDecision` values of applied or skipped site rules.
+- `contentSnapshot`: a `ContentSnapshot` of the merged content for the pass.
+
+All snapshots describe their first blocks with the shared `BlockSummary` type.
 
 All report values are read-only and `Sendable`.
 

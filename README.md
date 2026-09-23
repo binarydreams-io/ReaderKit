@@ -15,7 +15,7 @@ The extraction engine is an adapted, non-line-for-line Swift implementation
 of [Mozilla Readability](https://github.com/mozilla/readability).
 ReaderKit adds host-gated site rules, structured inspection reports, and a native `RichText` renderer.
 
-Version `1.0.0` uses Swift tools 6.2.
+Version `2.0.0` uses Swift tools 6.2.
 It supports iOS 17 or later and macOS 14 or later.
 
 <br clear="left">
@@ -41,9 +41,12 @@ Add ReaderKit to your package:
 ```swift
 .package(
   url: "https://github.com/binarydreams-io/ReaderKit",
-  from: "1.0.0"
+  from: "2.0.0"
 )
 ```
+
+Version 2.0 renames several public APIs.
+To upgrade from 1.x, use the migration table in the [Changelog](CHANGELOG.md#200---2026-09-23).
 
 Add only the product that your target needs:
 
@@ -109,6 +112,9 @@ let article = try extractor.parse()
 
 print(article.title)
 print(article.byline ?? "Unknown author")
+if let publishedDate = article.publishedDate {
+  print(publishedDate)
+}
 print(article.content)
 ```
 
